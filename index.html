@@ -6,7 +6,28 @@
 <meta name="theme-color" content="#7b5cd6">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Block Bloom</title>
+<title>Block Bloom: free block puzzle, zero ads</title>
+<meta name="description" content="Drag, clear, combo. Tap to play the same pieces and beat my score!">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Block Bloom">
+<meta property="og:title" content="Block Bloom: free block puzzle, zero ads">
+<meta property="og:description" content="Drag, clear, combo. Tap to play the same pieces and beat my score!">
+<meta property="og:url" content="https://duncanjameslowe37-svg.github.io/block-bloom/">
+<meta property="og:image" content="https://duncanjameslowe37-svg.github.io/block-bloom/og-image.png">
+<meta property="og:image:secure_url" content="https://duncanjameslowe37-svg.github.io/block-bloom/og-image.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Block Bloom: a colourful block puzzle board, the words Can you beat me? and a Zero Ads badge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Block Bloom: free block puzzle, zero ads">
+<meta name="twitter:description" content="Drag, clear, combo. Tap to play the same pieces and beat my score!">
+<meta name="twitter:image" content="https://duncanjameslowe37-svg.github.io/block-bloom/og-image.png">
+<meta name="twitter:image:alt" content="Block Bloom: a colourful block puzzle board, the words Can you beat me? and a Zero Ads badge">
+<link rel="canonical" href="https://duncanjameslowe37-svg.github.io/block-bloom/">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <style>
 :root{--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px);--accent:#ffd60a}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
@@ -35,6 +56,7 @@ body.menu #hud .scorebox,body.menu #homeBtn{visibility:hidden}
 .card{width:min(380px,100%);text-align:center;transform:translateY(20px) scale(.96);transition:transform .35s cubic-bezier(.2,1.6,.4,1)}
 .overlay.show .card{transform:none}
 .logo{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:10px}
+.pvlink{display:inline-block;margin-top:12px;font-size:12px;font-weight:700;color:#fff;opacity:.55;text-decoration:none;padding:4px 10px;pointer-events:auto}.pvlink:hover{opacity:.9;text-decoration:underline}
 .tagline{font-size:15px;font-weight:800;opacity:.92;margin:0 0 18px;text-shadow:0 2px 0 rgba(0,0,0,.15)}
 .logo .row{display:flex;gap:5px}
 .logo .tile{width:44px;height:48px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:30px;
@@ -97,7 +119,24 @@ body.menu #swapBtn{visibility:hidden}
 .skin.sel{outline:3px solid #fff;outline-offset:-3px}
 .skin .lk{position:absolute;inset:0;border-radius:16px;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-size:24px}
 #themes .card,#over .card{max-height:100%;overflow:auto;scrollbar-width:none}
-#chalBtn{background:linear-gradient(90deg,rgba(255,214,10,.35),rgba(255,95,109,.35));margin:0 0 16px}
+#chalCard{margin:0 0 16px;padding:16px 16px 18px;border-radius:24px;background:linear-gradient(135deg,rgba(255,214,10,.38),rgba(255,95,109,.42));border:3px solid rgba(255,255,255,.7);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.chTitle{font-size:20px;white-space:nowrap;font-weight:900;letter-spacing:.5px;display:flex;align-items:center;justify-content:center;gap:8px;text-shadow:0 2px 0 rgba(0,0,0,.18)}
+.overlay{padding-top:calc(var(--safe-t) + 64px)}
+body.chal .logo .tile{width:36px;height:40px;font-size:24px;border-radius:9px}
+body.chal .tagline{margin-bottom:12px;font-size:14px}
+body.chal #chalCard{padding:12px 14px 14px}
+.chTitle svg{font-size:20px}
+.chText{font-size:17px;font-weight:800;margin:8px 0 4px;line-height:1.3}
+.chText b{font-size:22px;color:#fff6a8}
+.chSub{font-size:13px;font-weight:800;opacity:.85;margin-bottom:12px}
+.bigbtn.gold{background:linear-gradient(#ffe45c,#ffb800);color:#5a3800;text-shadow:none;box-shadow:0 7px 0 #b77d00,0 14px 24px rgba(0,0,0,.25);font-size:26px;height:70px}
+.bigbtn.gold:active{box-shadow:0 2px 0 #b77d00}
+.bigbtn.secondary{height:58px;font-size:22px;animation:none;background:rgba(255,255,255,.2);box-shadow:0 5px 0 rgba(0,0,0,.18)}
+.row2{display:flex;gap:10px;margin-top:16px}
+.lbtn{flex:1;min-height:58px;padding:8px 10px;border-radius:18px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:16px;font-weight:900;line-height:1.1;background:rgba(255,255,255,.2);box-shadow:0 5px 0 rgba(0,0,0,.18);transition:transform .08s}
+.lbtn svg{font-size:22px;flex:none}
+.lbtn:active{transform:translateY(3px)}
+.lbtn.gold{background:linear-gradient(#ffe45c,#ffb800);color:#5a3800;box-shadow:0 5px 0 #b77d00}
 #oChal{display:none;margin:10px 0 0;padding:10px;border-radius:14px;font-weight:900;font-size:20px}
 #oChal.win{background:linear-gradient(#5dff8a,#1fc45a);box-shadow:0 4px 0 #128a3c}
 #oChal.lose{background:rgba(0,0,0,.25)}
@@ -122,7 +161,12 @@ body.menu #swapBtn{visibility:hidden}
   <div class="card">
     <div class="logo" id="logo"></div>
     <div class="tagline">The block puzzle with zero ads. Just play.</div>
-    <button class="subbtn" id="chalBtn" style="display:none"><div class="ic" style="background:linear-gradient(#ff5f6d,#ffc371)"><svg viewBox="0 0 24 24"><path d="M3 2h3l9 9-3 3-9-9zm18 0v3l-9 9-3-3 9-9zM5 15l4 4-2 2-1-1-2 2-2-2 2-2-1-1zm14 0 2 2-1 1 2 2-2 2-2-2-1 1-2-2z"/></svg></div><div><div class="t1">CHALLENGE!</div><div class="t2" id="chalInfo"></div></div></button>
+    <div id="chalCard" style="display:none">
+      <div class="chTitle"><svg viewBox="0 0 24 24"><path d="M3 2h3l9 9-3 3-9-9zm18 0v3l-9 9-3-3 9-9zM5 15l4 4-2 2-1-1-2 2-2-2 2-2-1-1zm14 0 2 2-1 1 2 2-2 2-2-2-1 1-2-2z"/></svg> YOU'VE BEEN CHALLENGED!</div>
+      <div class="chText" id="chalInfo"></div>
+      <div class="chSub">Free · zero ads · no sign-up</div>
+      <button class="bigbtn gold" id="chalBtn"><svg viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg>PLAY CHALLENGE</button>
+    </div>
     <button class="bigbtn" id="playBtn"><svg viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg>PLAY</button>
     <button class="subbtn" id="dailyBtn">
       <div class="ic" style="background:linear-gradient(#ff8a5c,#ff4d6d)"><svg viewBox="0 0 24 24"><path d="M7 2h2v2h6V2h2v2h3v18H4V4h3zm-1 7v11h12V9z"/><path d="M8 11h3v3H8z"/></svg></div>
@@ -136,6 +180,7 @@ body.menu #swapBtn{visibility:hidden}
       <div class="ic" style="background:linear-gradient(#5ee7ff,#7b61ff)"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A4.6 4.6 0 0 0 22 10.8C22 5.9 17.5 2 12 2zM6.5 12a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3-4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3 4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/></svg></div>
       <div style="flex:1"><div class="t1">THEMES <span id="tCount" style="opacity:.7;font-size:14px"></span></div><div class="bar xp" style="height:10px"><i id="tBar"></i></div></div>
     </button>
+    <a class="pvlink" href="privacy.html">Privacy</a>
   </div>
 </div>
 
@@ -151,11 +196,13 @@ body.menu #swapBtn{visibility:hidden}
     <div class="metaRow"><span id="oXpTxt"></span><span id="oNext"></span></div>
     <div class="bar xp"><i id="oXpBar"></i></div>
     <button class="bigbtn" id="replay"><svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7a6 6 0 1 1-6 6H4a8 8 0 1 0 8-8z"/></svg></button>
+    <div class="row2">
+      <button class="lbtn" id="oShare"><svg viewBox="0 0 24 24"><path d="M9 3 7.2 5H4a2 2 0 0 0-2 2v11c0 1.1.9 2 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.2L15 3zm3 5a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>Share score</button>
+      <button class="lbtn gold" id="oChallenge"><svg viewBox="0 0 24 24"><path d="M3 2h3l9 9-3 3-9-9zm18 0v3l-9 9-3-3 9-9zM5 15l4 4-2 2-1-1-2 2-2-2 2-2-1-1zm14 0 2 2-1 1 2 2-2 2-2-2-1 1-2-2z"/></svg>Challenge a friend</button>
+    </div>
     <div class="row3">
       <button class="ibtn" id="oHome" aria-label="Home"><svg viewBox="0 0 24 24"><path d="M12 3 2 11.5h3V21h5.5v-6h3v6H19v-9.5h3z"/></svg></button>
       <button class="ibtn" id="oThemes" aria-label="Themes"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A4.6 4.6 0 0 0 22 10.8C22 5.9 17.5 2 12 2zM6.5 12a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3-4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3 4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/></svg></button>
-      <button class="ibtn" id="oShare" aria-label="Brag card"><svg viewBox="0 0 24 24"><path d="M9 3 7.2 5H4a2 2 0 0 0-2 2v11c0 1.1.9 2 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.2L15 3zm3 5a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg></button>
-      <button class="ibtn" id="oChallenge" aria-label="Challenge a friend"><svg viewBox="0 0 24 24"><path d="M3 2h3l9 9-3 3-9-9zm18 0v3l-9 9-3-3 9-9zM5 15l4 4-2 2-1-1-2 2-2-2 2-2-1-1zm14 0 2 2-1 1 2 2-2 2-2-2-1 1-2-2z"/></svg></button>
     </div>
   </div>
 </div>
@@ -730,16 +777,23 @@ function makeCard(){
 let bragBlob=null,bragP=null,wasBest=false;
 function openBrag(){const c=makeCard();$('#bragImg').src=c.toDataURL('image/png');bragBlob=null;bragP=new Promise(res=>c.toBlob(b=>{bragBlob=b;res(b)},'image/png'));show('#brag');SFX.click()}
 async function copyText(t){try{await navigator.clipboard.writeText(t);return true}catch(e){try{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();const ok=document.execCommand('copy');ta.remove();return ok}catch(_){return false}}}
-function shareText(){return challenge&&score<=challenge.score?`I got ${fmt(score)} in Block Bloom ${MODEL[mode]}. Your ${fmt(challenge.score)} still stands... for now!`:`I scored ${fmt(score)} in Block Bloom ${MODEL[mode]}! Same pieces, can you beat me?`}
+const MODET={classic:'Classic',daily:'Daily',speed:'Speed'};
+const TAIL='Free, no ads, plays in your browser:';
+function challengeText(link){const M=MODET[mode];
+ if(challenge){const cs=fmt(challenge.score);
+  return score>challenge.score?`🧩 I beat your Block Bloom score! ${fmt(score)} vs your ${cs} in ${M}. Your turn: you get the exact same pieces again. Can you take it back? ${TAIL} ${link}`
+   :`🧩 I took on your Block Bloom challenge: ${fmt(score)} vs your ${cs} in ${M}. Rematch? Tap to play the exact same pieces and see who wins. ${TAIL} ${link}`}
+ return `🧩 I challenge you to Block Bloom! I scored ${fmt(score)} in ${M}. You get the exact same pieces. Can you beat me? ${TAIL} ${link}`}
+function bragText(link){return `🧩 I just scored ${fmt(score)} in Block Bloom (${MODET[mode]})${wasBest?', a new personal best':''}! It's a free block puzzle with zero ads that plays in your browser. Tap to play my exact pieces and try to beat me: ${link}`}
 async function downloadCard(){if(!bragBlob&&bragP)await bragP;if(!bragBlob)return;const a=document.createElement('a');a.href=URL.createObjectURL(bragBlob);a.download='block-bloom-'+score+'.png';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}
 async function shareCard(){
  const link=challengeLink();if(!bragBlob&&bragP)await bragP;
  try{const f=new File([bragBlob],'block-bloom.png',{type:'image/png'});
-  if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],text:shareText()+' '+link});return}}catch(e){if(e&&e.name==='AbortError')return}
- await downloadCard();const ok=await copyText(shareText()+' '+link);toast(ok?'IMAGE SAVED · LINK COPIED':'IMAGE SAVED')}
+  if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],text:bragText(link)});return}}catch(e){if(e&&e.name==='AbortError')return}
+ await downloadCard();const ok=await copyText(bragText(link));toast(ok?'IMAGE SAVED · LINK COPIED':'IMAGE SAVED')}
 async function shareChallenge(){
- const link=challengeLink(),t=shareText()+' '+link;
- try{if(navigator.share&&matchMedia('(pointer:coarse)').matches){await navigator.share({text:shareText(),url:link});return}}catch(e){if(e&&e.name==='AbortError')return}
+ const link=challengeLink(),t=challengeText(link);
+ try{if(navigator.share&&matchMedia('(pointer:coarse)').matches){await navigator.share({text:t});return}}catch(e){if(e&&e.name==='AbortError')return}
  toast((await copyText(t))?IC.swords+' CHALLENGE LINK COPIED':'COPY FAILED')}
 /* ---- swap ---- */
 function updateSwapUI(){const b=$('#swapBtn');b.style.setProperty('--p',swaps>=MAXS?100:Math.min(100,meter));$('#swapN').textContent=swaps;
@@ -853,7 +907,9 @@ function buildTitle(){
  const tgt=1500+Math.floor(mulberry32(hashStr('bloom-'+t))()*11)*100;dailyTarget=tgt;
  $('#dInfo').innerHTML=`<span class="flame">${IC.flame}</span>${streak} <span class="stars">${starHtml(stars(db))}</span>`;
  $('#sInfo').innerHTML=`<span style="color:#ffd60a">${IC.crown}</span> ${fmt(store.bestSpeed||0)}`;
- const cb=$('#chalBtn');if(pendingChal){cb.style.display='flex';$('#chalInfo').innerHTML=`BEAT <b>${fmt(pendingChal.score)}</b> · ${MODEL[pendingChal.mode]}`}else cb.style.display='none';
+ const cc=$('#chalCard');if(pendingChal){cc.style.display='block';$('#chalInfo').innerHTML=`Beat <b>${fmt(pendingChal.score)}</b> in ${MODET[pendingChal.mode]}<br>with the exact same pieces`}else cc.style.display='none';
+ $('#playBtn').classList.toggle('secondary',!!pendingChal);
+ document.body.classList.toggle('chal',!!pendingChal);
  const u=unlockedCount();$('#tCount').textContent=u+'/'+THEMES.length;
  const nx=THEMES.find(x=>x.need>store.xp);$('#tBar').style.width=nx?(store.xp/nx.need*100)+'%':'100%';
 }
