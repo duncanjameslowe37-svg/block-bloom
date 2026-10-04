@@ -12,9 +12,9 @@
 <meta property="og:site_name" content="Blokaholic">
 <meta property="og:title" content="Blokaholic: free block puzzle, zero ads">
 <meta property="og:description" content="Drag, clear, combo. Tap to play the same pieces and beat my score!">
-<meta property="og:url" content="https://duncanjameslowe37-svg.github.io/block-bloom/">
-<meta property="og:image" content="https://duncanjameslowe37-svg.github.io/block-bloom/og-image.png">
-<meta property="og:image:secure_url" content="https://duncanjameslowe37-svg.github.io/block-bloom/og-image.png">
+<meta property="og:url" content="https://blokaholic.app/">
+<meta property="og:image" content="https://blokaholic.app/og-image.png">
+<meta property="og:image:secure_url" content="https://blokaholic.app/og-image.png">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -22,9 +22,9 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Blokaholic: free block puzzle, zero ads">
 <meta name="twitter:description" content="Drag, clear, combo. Tap to play the same pieces and beat my score!">
-<meta name="twitter:image" content="https://duncanjameslowe37-svg.github.io/block-bloom/og-image.png">
+<meta name="twitter:image" content="https://blokaholic.app/og-image.png">
 <meta name="twitter:image:alt" content="Blokaholic: a colourful block puzzle board, the words Can you beat me? and a Zero Ads badge">
-<link rel="canonical" href="https://duncanjameslowe37-svg.github.io/block-bloom/">
+<link rel="canonical" href="https://blokaholic.app/">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -802,8 +802,8 @@ function applyGift(){
  say(label,cx,cy+L.cell*.9,L.cell*(label.length>14?.5:.68),col,{rainbow:rb,life:1700,rise:L.cell*.6});
  if(g.type==='skin'&&g.skin)setTimeout(()=>toast(IC.gift+' NEW BLOCKS IN THEMES'),1200)}
 /* ---- brag card (PNG via canvas) ---- */
-const LIVE='https://duncanjameslowe37-svg.github.io/block-bloom/';
-const SITE=location.protocol.startsWith('http')?location.origin+location.pathname:LIVE;
+const LIVE='https://blokaholic.app/';
+const SITE=/^(localhost|127\.0\.0\.1)$/.test(location.hostname)?location.origin+location.pathname:LIVE;// share links always use the canonical domain
 const MODEL={classic:'CLASSIC',daily:'DAILY',speed:'SPEED'};
 function challengeLink(sc=score){return SITE+'?c='+gameSeed.toString(36)+'-'+mode[0]+'-'+Math.max(0,Math.round(sc)).toString(36)}
 function makeCard(){
