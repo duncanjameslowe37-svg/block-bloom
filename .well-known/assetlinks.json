@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.blokaholic.twa",
+      "sha256_cert_fingerprints": [
+        "A4:70:98:56:D3:F4:1E:45:C1:1E:7A:55:38:50:73:BB:65:93:7E:B4:CC:48:62:FE:49:E9:EE:D0:50:BC:CC:5D"
+      ]
+    }
+  }
+]
