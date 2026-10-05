@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-5n8i5QGo4wcxUyfw64NrDg9TrHG4WS0EklEBMjgqKsA='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-oIgz9WEVcW0tm4izn1GbNX/OqzrK9CvKtqkyBTbbyWI='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#7b5cd6">
 <meta name="mobile-web-app-capable" content="yes">
@@ -845,7 +845,7 @@ function update(dt){
   if(speedT<2000&&speedT>0){const q=Math.ceil(speedT/500);if(q!==lastTick){lastTick=q;SFX.tick(q<=2)}}
   if(speedT<=0)strike()}
  if(state==='play'){const k=fitSig();if(k!==fitKey){fitKey=k;fitT=FIT_DELAY}else if(fitT>0&&!document.hidden&&!document.querySelector('.overlay.show,#quitP.show'))fitT-=rawDt}else{fitKey='';fitT=FIT_DELAY}
- if(stuckActive&&stuck&&state==='play'&&!document.hidden&&!document.querySelector('.overlay.show,#quitP.show')){if(!stuckShown){stuckSoft-=rawDt;if(stuckSoft<=0)showStuckPanel()}else{stuckLeft-=rawDt;if(stuckLeft<=0)autoSwap(true)}}
+ if(stuckActive&&stuck&&state==='play'&&!document.hidden&&!document.querySelector('.overlay.show,#quitP.show')){if(!stuckShown){stuckSoft-=rawDt;const g=stuckGlow();if(g!==glowOn){glowOn=g;updateSwapUI();if(g&&mode!=='speed')tip('stuck','Stuck! Tap SWAP to change a piece')}if(stuckSoft<=0)showStuckPanel()}else{stuckLeft-=rawDt;if(stuckLeft<=0)autoSwap(true)}}
  // idle move timer (Classic/Daily/challenges): pauses when hidden, on menus/modals, during gift reveal, and while a piece is held
  if(idleOn()){idleT-=dt;
   if(idleT<=IDLE_WARN&&!idleSince)idleSince=now;
@@ -1089,11 +1089,13 @@ async function shareChallenge(){
 /* ---- swap ---- */
 function updateSwapUI(){const b=$('#swapBtn');b.style.setProperty('--p',swaps>=MAXS?100:Math.min(100,meter));$('#swapN').textContent=swaps;
  const st=stuck&&swaps>0&&state==='play',sp=$('#stuckP');
- if(st&&!stuckActive){stuckActive=true;stuckSoft=mode==='speed'?0:STUCK_PANEL;stuckShown=false;sp.classList.remove('show');if(!replaying)tip('stuck','Stuck! Tap SWAP to change a piece')}
+ if(st&&!stuckActive){stuckActive=true;stuckSoft=mode==='speed'?0:STUCK_PANEL;stuckShown=false;sp.classList.remove('show')}
  if(!st){stuckActive=false;stuckShown=false;sp.classList.remove('show')}
  b.classList.toggle('empty',swaps===0);b.classList.toggle('full',swaps>=MAXS&&!V1);b.classList.toggle('armed',armed);
- b.classList.toggle('pulse',st&&stuckShown&&!armed);b.classList.toggle('softglow',st&&!stuckShown&&!armed);
+ b.classList.toggle('pulse',st&&stuckShown&&!armed);b.classList.toggle('softglow',st&&!stuckShown&&!armed&&stuckGlow());
  document.body.classList.toggle('stuck',st&&stuckShown)}
+// soft glow (and the one-time tip) only once the stuck soft phase has run as long as the no-fit delay
+let glowOn=false;function stuckGlow(){return stuckActive&&stuckSoft<=STUCK_PANEL-FIT_DELAY}
 function showStuckPanel(){const sp=$('#stuckP');stuckShown=true;stuckLeft=STUCK_AUTO;stuckAt=performance.now();sp.classList.remove('show');void sp.offsetWidth;sp.classList.add('show');SFX.bad();buzz([20,40,20]);updateSwapUI()}
 function bestSwapSlot(){let bi=-1,bn=-1;tray.forEach((t,i)=>{if(t&&t.p.cells.length>bn){bn=t.p.cells.length;bi=i}});return bi}
 function autoSwap(auto){
@@ -1126,7 +1128,7 @@ function doSwap(i){
  stuckActive=false;stuckShown=false;checkStuck();updateSwapUI();if(!replaying)saveRun()}
 function checkStuck(){
  if(tray.some(t=>t&&anyFit(t.p))){stuck=false;updateSwapUI();return}
- if(swaps>0){if(!stuck){stuck=true;stuckAt0=performance.now();if(!replaying){SFX.bad();buzz(15)}}updateSwapUI();return}
+ if(swaps>0){if(!stuck){stuck=true;stuckAt0=performance.now()}updateSwapUI();return}
  if(replaying)return;
  stuck=false;updateSwapUI();endGame('space')}
 /* ---- speed ---- */
