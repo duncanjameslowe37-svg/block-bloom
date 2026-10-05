@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-px87W66Ow7r5F6s+lL4aL3ZT9pGpWqvs7vp+udH/1Rs='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-5n8i5QGo4wcxUyfw64NrDg9TrHG4WS0EklEBMjgqKsA='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#7b5cd6">
 <meta name="mobile-web-app-capable" content="yes">
@@ -972,7 +972,7 @@ function place(i,gx,gy){
   if(perfect){gain+=Math.round(1000*mult);perfects++}
   if(mult2>0){gain*=2;mult2--}
   clearsN++;let gr=null;if(clearsN>=nextGift){nextGift=clearsN+(V1?5+Math.floor(grng()*3):12+Math.floor(grng()*6));gr=rollGift()}
-  addSwapMeter((14*n+8*(combo-1)+(perfect?100:0))*(V1?1:.5));
+  addSwapMeter((14*n+8*(combo-1)+(perfect?100:0))*(V1||placedN<30?1:.5)); // v2: half speed after the first 30 moves (keeps early deaths at the old level)
   pts+=gain;
   if(F){
   if(gr)setTimeout(()=>showGift(gr),500);
