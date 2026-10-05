@@ -1,6 +1,6 @@
 /* Blokaholic service worker: full offline play.
    Bump VERSION on every deploy; the new worker installs, takes over, and the next reload serves the new build. */
-const VERSION = 'blokaholic-v6';
+const VERSION = 'blokaholic-v7';
 const CORE = ['/', '/index.html', '/privacy.html', '/terms.html', '/manifest.webmanifest',
   '/icon-192.png', '/icon-512.png', '/icon-maskable-192.png', '/icon-maskable-512.png',
   '/apple-touch-icon.png', '/favicon-32.png'];
