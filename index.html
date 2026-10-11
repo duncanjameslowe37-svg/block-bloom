@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-JURYARkFIJwlnsl8ZG8rsM7S1EOCqqnhciuqXLeWNZg='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-+G/CAjGRoddbfw2SoXdkE6BRA7sXxRdN7ry8vl1YfOU='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#7b5cd6">
 <meta name="mobile-web-app-capable" content="yes">
@@ -172,7 +172,7 @@ body.chal #chalCard{padding:12px 14px 14px}
 #oChal{display:none;margin:10px 0 0;padding:10px;border-radius:14px;font-weight:900;font-size:20px}
 #oChal.win{background:linear-gradient(#5dff8a,#1fc45a);box-shadow:0 4px 0 #128a3c}
 #oChal.lose{background:rgba(0,0,0,.25)}
-#bragImg{width:min(300px,68vw,calc((100vh - 190px)*.8));border-radius:18px;box-shadow:0 12px 30px rgba(0,0,0,.35);display:block;margin:0 auto}
+#bragImg{width:min(300px,68vw,calc((100vh - 190px)*.8));border-radius:18px;box-shadow:0 12px 30px rgba(0,0,0,.35);display:block;margin:0 auto;height:auto}
 .heart{color:#ff4d6d}.heart.off{color:rgba(255,255,255,.3)}
 /* audit-2 */
 .overlay{overflow-y:auto;-webkit-overflow-scrolling:touch;align-items:flex-start!important;touch-action:pan-y pinch-zoom}
@@ -193,7 +193,9 @@ body.rm *,body.rm *::before,body.rm *::after{animation-duration:.001ms!important
 #quitP .q1{font-size:26px;font-weight:900}#quitP .q2{font-size:16px;font-weight:700;opacity:.9;margin:6px 0 14px}
 #quitP .bigbtn{height:62px;font-size:24px;animation:none}#quitP .subbtn{justify-content:center;font-weight:900;font-size:18px}
 #contBtn[hidden]{display:none}#contBtn{font-size:21px;height:66px;margin-bottom:12px}
-#mBtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:12px;padding:10px 14px;border-radius:16px;background:rgba(255,255,255,.12);font-size:15px;font-weight:900;color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+#mBtn,#fBtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:12px;padding:10px 14px;border-radius:16px;background:rgba(255,255,255,.12);font-size:15px;font-weight:900;color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.saver{margin-left:6px;font-size:.9em}.saver.used{opacity:.3;filter:grayscale(1)}
+#friends .card{max-width:380px}#fNickRow{display:flex;gap:8px;margin:10px 0}#fNickRow .lbtn{flex:0 0 96px}#fNick{flex:1;min-width:0;font:inherit;font-weight:800;font-size:16px;padding:10px 12px;border-radius:12px;border:0;background:rgba(255,255,255,.9);color:#2a1450}.fMsg{font-size:13px;font-weight:800;opacity:.9;margin:6px 0;min-height:1em}.fRow{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.12);border-radius:12px;padding:8px 12px;margin:6px 0;font-weight:900;text-align:left}.fRow.me{background:rgba(255,214,10,.28)}.fRow .r{width:24px;opacity:.8}.fRow .n{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#fList{max-height:40vh;overflow:auto}
 #mBtn b{background:#ffd60a;color:#5a3800;border-radius:10px;padding:1px 8px;font-size:13px}
 .mItem{background:rgba(255,255,255,.12);border-radius:16px;padding:10px 14px;margin:10px 0;text-align:left}.mItem .mT{font-weight:900;font-size:16px}.mItem .mP{font-size:13px;font-weight:800;opacity:.85;margin-top:4px}
 .mItem.done{background:rgba(93,255,138,.18)}.mItem.done .bar i{background:linear-gradient(90deg,#5dff8a,#2ec46b)}
@@ -242,7 +244,8 @@ body.rm *,body.rm *::before,body.rm *::after{animation-duration:.001ms!important
       <div style="flex:1"><div class="t1">THEMES <span id="tCount" style="opacity:.7;font-size:14px"></span></div><div class="bar xp" style="height:10px"><i id="tBar"></i></div></div>
     </button>
     <button id="mBtn">🎯 DAILY MISSIONS <b id="mCount">0/3</b></button>
-    <div class="homeFoot"><button class="pvlink" id="installBtn" hidden><svg viewBox="0 0 24 24"><path d="M11 3h2v9.2l3.3-3.3 1.4 1.4L12 16l-5.7-5.7 1.4-1.4 3.3 3.3zM5 18h14v2H5z"/></svg> Install app</button><button class="pvlink" id="rmBtn" aria-pressed="false">Reduce motion: Off</button><a class="pvlink" href="privacy.html">Privacy</a><a class="pvlink" href="terms.html">Terms</a></div>
+    <button id="fBtn">🏆 FRIENDS · TODAY'S SCORES</button>
+    <div class="homeFoot"><button class="pvlink" id="installBtn" hidden><svg viewBox="0 0 24 24"><path d="M11 3h2v9.2l3.3-3.3 1.4 1.4L12 16l-5.7-5.7 1.4-1.4 3.3 3.3zM5 18h14v2H5z"/></svg> Install app</button><button class="pvlink" id="rmBtn" aria-pressed="false">Reduce motion: Off</button><button class="pvlink" id="tipsBtn">Show tips again</button><a class="pvlink" href="privacy.html">Privacy</a><a class="pvlink" href="terms.html">Terms</a></div>
     <div class="kbHelp">Keyboard: 1–3 pick a piece · arrows move · Enter place · S swap</div>
   </div>
 </div>
@@ -252,6 +255,16 @@ body.rm *,body.rm *::before,body.rm *::after{animation-duration:.001ms!important
   <div style="font-size:14px;font-weight:700;opacity:.85">New missions every day · +20 XP each</div>
   <div id="mList"></div>
   <button class="bigbtn" id="mBack" style="height:58px;font-size:22px">DONE</button>
+</div></div>
+<div id="friends" class="overlay" inert aria-hidden="true"><div class="card">
+  <div style="font-size:24px;font-weight:900">🏆 TODAY'S SCORES</div>
+  <div style="font-size:13px;font-weight:700;opacity:.85">Daily scores among friends · new board every day</div>
+  <div id="fNickRow"><input id="fNick" maxlength="14" placeholder="Pick a nickname" autocomplete="off" aria-label="Nickname"><button class="lbtn gold" id="fNickSave">Save</button></div>
+  <div id="fMsg" class="fMsg" role="status"></div>
+  <div id="fList"></div>
+  <div class="row2"><button class="lbtn" id="fShare">Invite friends</button><button class="lbtn" id="fJoin">Join with code</button></div>
+  <div id="fCode" class="fMsg"></div>
+  <button class="bigbtn" id="fBack" style="height:58px;font-size:22px">DONE</button>
 </div></div>
 <div id="quitP" role="dialog" aria-modal="true" aria-labelledby="qT"><div class="card">
   <div class="q1" id="qT">Leave game?</div>
@@ -276,6 +289,7 @@ body.rm *,body.rm *::before,body.rm *::after{animation-duration:.001ms!important
       <button class="lbtn" id="oShare"><svg viewBox="0 0 24 24"><path d="M9 3 7.2 5H4a2 2 0 0 0-2 2v11c0 1.1.9 2 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.2L15 3zm3 5a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>Share score</button>
       <button class="lbtn gold" id="oChallenge"><svg viewBox="0 0 24 24"><path d="M3 2h3l9 9-3 3-9-9zm18 0v3l-9 9-3-3 9-9zM5 15l4 4-2 2-1-1-2 2-2-2 2-2-1-1zm14 0 2 2-1 1 2 2-2 2-2-2-1 1-2-2z"/></svg>Challenge a friend</button>
     </div>
+    <button class="lbtn" id="oFriends" hidden style="width:100%;margin-top:10px">🏆 Friends' scores today</button>
     <div class="row3">
       <button class="ibtn" id="oHome" aria-label="Home"><svg viewBox="0 0 24 24"><path d="M12 3 2 11.5h3V21h5.5v-6h3v6H19v-9.5h3z"/></svg></button>
       <button class="ibtn" id="oThemes" aria-label="Themes"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A4.6 4.6 0 0 0 22 10.8C22 5.9 17.5 2 12 2zM6.5 12a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3-4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3 4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/></svg></button>
@@ -293,7 +307,7 @@ body.rm *,body.rm *::before,body.rm *::after{animation-duration:.001ms!important
   </div>
 </div>
 <div id="brag" class="overlay" inert aria-hidden="true"><div class="card">
-  <img id="bragImg" alt="Score card">
+  <img id="bragImg" alt="Score card" width="1080" height="1350">
   <div class="row3"><button class="ibtn" id="bBack" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M20 11H7.8l5.6-5.6L12 4l-8 8 8 8 1.4-1.4L7.8 13H20z"/></svg></button><button class="ibtn" id="bSave" aria-label="Download"><svg viewBox="0 0 24 24"><path d="M11 3h2v9l3.5-3.5 1.4 1.4L12 15.8 6.1 9.9l1.4-1.4L11 12zM4 18h16v2H4z"/></svg></button><button class="ibtn" id="bShare" aria-label="Share" style="flex:2;background:linear-gradient(#5dff8a,#1fc45a)"><svg viewBox="0 0 24 24"><path d="M18 16a3 3 0 0 0-2.2 1l-7-4a3 3 0 0 0 0-2l7-4A3 3 0 1 0 15 5l-7 4a3 3 0 1 0 0 6l7 4a3 3 0 1 0 3-3z"/></svg></button></div>
 </div></div>
 <div id="toast" role="status" aria-live="polite"></div>
@@ -389,6 +403,10 @@ const pad=n=>String(n).padStart(2,'0');
 const dstr=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 const today=()=>dstr(new Date());
 const yesterday=()=>{const d=new Date();d.setDate(d.getDate()-1);return dstr(d)};
+const dayBefore=(s,n)=>{const d=new Date(s+'T12:00:00');d.setDate(d.getDate()-n);return dstr(d)};
+const mondayOf=s=>{const d=new Date(s+'T12:00:00');d.setDate(d.getDate()-((d.getDay()+6)%7));return dstr(d)};
+const saverFree=()=>store.saverWk!==mondayOf(today());
+const saverHtml=()=>`<span class="saver${saverFree()?'':' used'}" title="${saverFree()?'Streak saver ready: covers one missed day this week':'Streak saver used this week, back on Monday'}">❄️</span>`;
 const fmt=n=>Math.round(n).toLocaleString('en-GB');
 
 /* ---------------- pieces ---------------- */
@@ -757,7 +775,7 @@ function draw(){
  // hint hand
  if(hint&&state==='play'&&!drag&&!kb&&tray[hint.i]&&(!store.seenHint||hintAgain)&&!stuck&&!inIntro()){
   const ph=(now%2400)/2400,t=ease(Math.min(1,Math.max(0,(ph-.15)/.55)));
-  {const lb='DRAG A PIECE ONTO THE BOARD',fz=Math.min(17,cell*.36),ly=L.land?by-cell*.55:L.slots[0].y-2;ctx.save();ctx.font=`900 ${fz}px ui-rounded,system-ui,sans-serif`;const w=ctx.measureText(lb).width+28;
+  {const lb='DRAG A PIECE ONTO THE BOARD',fz=Math.min(17,cell*.36),ly=by-cell*.55;ctx.save();ctx.font=`900 ${fz}px ui-rounded,system-ui,sans-serif`;const w=ctx.measureText(lb).width+28;
    ctx.globalAlpha=.92;ctx.fillStyle='rgba(26,12,52,.8)';rr(bx+S/2-w/2,ly-fz*.95,w,fz*1.9,fz*.95);ctx.fill();ctx.fillStyle='#ffd60a';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(lb,bx+S/2,ly+1);ctx.restore()}
   const a=slotCenter(hint.i),sh=tray[hint.i].p,bxp=bx+(hint.gx+sh.wd/2)*cell,byp=by+(hint.gy+sh.ht/2)*cell;
   const x=a.x+(bxp-a.x)*t,y=a.y+(byp-a.y)*t,s=L.tc+(cell-L.tc)*t;
@@ -904,7 +922,7 @@ function confetti(n=120){n=Math.min(n,Math.max(0,(lowFx||RM?120:240)-particles.l
 function say(s,x,y,size,col='#fff',o={}){for(const t of texts)if(now-t.t<500&&Math.abs(t.y-y)<size*.9&&Math.abs(t.x-x)<L.S*.6)y=t.y-size*1.05;texts.push(Object.assign({s,x,y,size,col,t:now,life:1100,rise:L.cell*1.2},o))}
 let toastT=0;
 function srSay(m){const e=$('#live');if(!e)return;e.textContent='';setTimeout(()=>e.textContent=m,30)}
-function toast(html,ms=2200){const t=$('#toast');t.innerHTML=html;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),ms)}
+function toast(html,ms=2200){const t=$('#toast');delete t.dataset.tip;t.innerHTML=html;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),ms)}
 
 /* ---------------- game logic ---------------- */
 const scoreEl=$('#score');
@@ -912,7 +930,10 @@ function bump(){scoreEl.classList.add('bump');setTimeout(()=>scoreEl.classList.r
 function bestNow(){return mode==='daily'?(store.dailyDate===today()?store.dailyBest:0):mode==='speed'?(store.bestSpeed||0):store.best}
 
 function checkSkinGoals(){if(replaying)return;for(const k in SKIN_GOALS)if(!store.skins.includes(k)&&SKIN_GOALS[k][1]()){store.skins.push(k);save();const nm=SKINS.find(x=>x[0]===k)[1];setTimeout(()=>{toast(IC.gift+' NEW BLOCKS UNLOCKED: '+nm);SFX.unlock&&SFX.unlock()},900)}}
-function tip(k,msg){if(replaying||store.tips[k])return;store.tips[k]=1;save();setTimeout(()=>toast(msg,3200),700)}
+let tipQ=[],tipBusy=false;
+function tip(k,msg){if(replaying||store.tips[k]||tipQ.some(q=>q.k===k))return;tipQ.push({k,msg});if(!tipBusy)nextTip(700)}
+function nextTip(d){tipBusy=true;setTimeout(()=>{const q=tipQ.shift();if(!q||state!=='play'||store.tips[q.k]){tipBusy=false;if(q&&state==='play')nextTip(0);return}store.tips[q.k]=1;save();toast(q.msg,3000);$('#toast').dataset.tip='1';setTimeout(()=>nextTip(400),3000)},d)}
+addEventListener('pointerdown',()=>{const t=$('#toast');if(t&&t.dataset.tip&&t.classList.contains('show')){t.classList.remove('show');delete t.dataset.tip}},{capture:true,passive:true});
 /* ---- daily missions: 3 a day, seeded by date (same for everyone), +20 XP each ---- */
 const MISSIONS=[{id:'multi',t:'Clear 2+ lines at once 3 times',n:3},{id:'combo',t:'Reach COMBO ×6',n:6},{id:'lines',t:'Clear 30 lines',n:30},{id:'colour',t:'Get a COLOUR bonus',n:1},
  {id:'classic',t:'Score 3,000 in one Classic game',n:3000},{id:'speed',t:'Score 1,500 in Speed',n:1500},{id:'daily',t:'Earn 2 stars on the Daily',n:2},{id:'swap',t:'Use 2 swaps',n:2},{id:'games',t:'Finish 3 games',n:3}];
@@ -976,7 +997,7 @@ function place(i,gx,gy){
    board[y][x]=null}
   perfect=board.every(r=>r.every(c=>!c));
   const left=board.flat().filter(Boolean).length;
-  if(perfect){gain+=Math.round(1000*mult);perfects++}
+  if(perfect){gain+=Math.round(1000*mult);perfects++;tip('perfect','Empty board = PERFECT clear, +1000!')}
   if(mult2>0){gain*=2;mult2--}
   clearsN++;let gr=null;if(clearsN>=nextGift){nextGift=clearsN+(V1?5+Math.floor(grng()*3):12+Math.floor(grng()*6));gr=rollGift()}
   addSwapMeter((14*n+8*(combo-1)+(perfect?100:0))*(V1||placedN<30?1:.5)); // v2: half speed after the first 30 moves (keeps early deaths at the old level)
@@ -996,8 +1017,8 @@ function place(i,gx,gy){
   if(combo>=2)setTimeout(()=>say('COMBO ×'+combo+(capped?' · MAX ×3':''),cxp,cyp-L.cell*.8,L.cell*(capped?.42:.5),'#ffb020'),80);
   const xb=store.xp;store.xp+=n+(perfect?5:0);store.lines+=n;
   const th=THEMES.find((t,i)=>t.need>xb&&t.need<=store.xp&&!(store.giftThemes||[]).includes(i));if(th)setTimeout(()=>{toast(IC.gift+' NEW THEME: '+th.name);SFX.unlock()},600);
-  if(combo===2)tip('combo','Clear again within 3 moves to grow your combo');
-  if(chroma)tip('colour','Single-colour line = score ×2');
+  if(combo===2)tip('combo','Clear lines back-to-back for a COMBO!');
+  if(chroma)tip('colour','One-colour line = COLOUR bonus, score ×2!');
   if(n>=2)mission('multi',1);mission('combo',combo,1);mission('lines',n);if(chroma)mission('colour',1);
   }
  }else{
@@ -1050,7 +1071,7 @@ function applyGift(){
  SFX.giftOpen();buzz([20,30,20]);confetti(60);burst(cx,cy,'#ffd60a',20,.45);burst(cx,cy,'#ff6fae',16,.45);
  say(r.label,cx,cy+L.cell*.9,L.cell*(r.label.length>14?.5:.68),r.col,{rainbow:r.rb,life:1700,rise:L.cell*.6});
  if(g.type==='skin'&&g.skin)setTimeout(()=>toast(IC.gift+' NEW BLOCKS IN THEMES'),1200);
- tip('gift','Gift boxes drop swaps, ×2 score and new looks')}
+ tip('gift','Clear a gift box for swaps, ×2 score or new looks!')}
 /* ---- brag card (PNG via canvas) ---- */
 const LIVE='https://blokaholic.app/';
 const SITE=/^(localhost|127\.0\.0\.1)$/.test(location.hostname)?location.origin+location.pathname:LIVE;// share links always use the canonical domain
@@ -1121,7 +1142,7 @@ function addSwapMeter(v){
  if(swaps>=MAXS)meter=100;
  if(got){const b=$('#swapBtn'),cx=L.swap.x+32,cy=L.swap.y+32;
   if(!replaying)setTimeout(()=>{b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop');burst(cx,cy,'#ffd60a',14,.3);burst(cx,cy,'#5ee7ff',10,.3);say('+'+got,cx,cy-44,L.cell*.55,'#ffd60a');SFX.earn();buzz(20)},350);
-  if(!store.swapHint&&!replaying){store.swapHint=true;setTimeout(()=>toast(IC.swap+' SWAP READY: TAP IT, THEN A PIECE'),800)}}
+  if(!store.swapHint&&!replaying){store.swapHint=true;tip('swap',IC.swap+' Swap earned! Tap SWAP, then a piece')}}
  updateSwapUI()}
 function doSwap(i){
  if(swaps<=0||!tray[i]||state!=='play')return;
@@ -1156,7 +1177,7 @@ function strike(){
  if(strikes<=0){speedT=0;endGame('time')}else{speedMax=speedFor(score);speedT=speedMax;lastTick=99}}
 
 function startGame(m,opt={}){
- unlockAudio();mode=m;challenge=opt.challenge||null;chalWon=false;{const h=$('#iosHint');if(h)h.classList.remove('show')}
+ unlockAudio();mode=m;challenge=opt.challenge||null;tipQ=[];chalWon=false;{const h=$('#iosHint');if(h)h.classList.remove('show')}
  V1=opt.v===1||!!(challenge&&challenge.v===1);
  gameSeed=(opt.seed!=null?opt.seed:m==='daily'?dailySeed(today()):(Math.random()*4294967296))>>>0;
  tut=opt.tut!=null?!!opt.tut:(m==='classic'&&!challenge&&!opt.seed&&!store.games&&!V1);meterOver=0;
@@ -1173,6 +1194,7 @@ function startGame(m,opt={}){
  if(m==='speed'){speedFirst=true;speedGrace=true;speedMax=SPEED_FIRST;speedT=speedMax;introT0=now;introStep=-1}
  mus.speed=m==='speed';setMusicTempo(m==='speed'?128:118);
  updateModeTag();updateSwapUI();updateX2();
+ if(!challenge&&!replaying){if(m==='daily')tip('daily','Same puzzle for everyone today. Play daily for a streak!');else if(m==='speed')tip('speed','Speed: place pieces before the timer runs out!')}
  dealTray();
  state='play';hideAll();setMusicMode('play');setMusicLevel(0);musTargets();
   hint=null;if(!store.seenHint)showHint();
@@ -1215,13 +1237,14 @@ function endGame(reason){
 let endReason='';
 function stars(s){if(!dailyTarget)return 0;return s>=dailyTarget*12?3:s>=dailyTarget*4?2:s>=dailyTarget?1:0}
 function starHtml(k){let h='';for(let i=0;i<3;i++)h+=`<span class="${i<k?'':'off'}">${IC.star}</span>`;return h}
-function showOver(){
+let streakSaved=false;
+function showOver(){streakSaved=false;
  state='over';
  const prev=bestNow();const isBest=score>prev&&score>0;wasBest=isBest;
  if(mode==='daily'&&!challenge){
   const t=today();if(store.dailyDate!==t){store.dailyDate=t;store.dailyBest=0}
   store.dailyBest=Math.max(store.dailyBest,score);
-  if(store.dailyLast!==t){store.dailyStreak=store.dailyLast===yesterday()?store.dailyStreak+1:1;store.dailyLast=t}
+  if(store.dailyLast!==t){if(store.dailyLast===yesterday())store.dailyStreak++;else if(store.dailyLast===dayBefore(t,2)&&store.dailyStreak>0&&saverFree()){store.dailyStreak++;store.saverWk=mondayOf(t);streakSaved=true;setTimeout(()=>toast('Streak saved! ❄️',3000),900)}else store.dailyStreak=1;store.dailyLast=t}
  }else if(mode==='daily'){}
  else if(mode==='speed')store.bestSpeed=Math.max(store.bestSpeed||0,score);
  else store.best=Math.max(store.best,score);
@@ -1238,7 +1261,8 @@ function showOver(){
   $('#oNearTxt').innerHTML=score/prev>=.8?`SO CLOSE! −${fmt(prev-score)}`:`${Math.round(score/prev*100)}% of <svg viewBox="0 0 24 24" style="color:#ffd60a"><path d="M3 7l4.5 4L12 4l4.5 7L21 7l-2 12H5z"/></svg>`}
  else near.style.display='none';
  const dd=$('#oDaily');
- if(mode==='daily'){dd.style.display='block';dd.innerHTML=starHtml(stars(score))+`<div style="font-size:14px;font-weight:900;color:#fff;margin-top:2px"><span class="flame">${IC.flame}</span> ${store.dailyStreak}</div>`}else dd.style.display='none';
+ if(mode==='daily'){dd.style.display='block';dd.innerHTML=starHtml(stars(score))+`<div style="font-size:14px;font-weight:900;color:#fff;margin-top:2px"><span class="flame">${IC.flame}</span> ${store.dailyStreak}${saverHtml()}${streakSaved?'<div style="font-size:13px;color:#bfe9ff">Streak saved! ❄️</div>':''}</div>`}else dd.style.display='none';
+ {const ob=$('#oFriends');ob.hidden=!(mode==='daily'&&!challenge);if(!ob.hidden)lbSubmitAll()}
  $('#oShare').style.display='flex';
  const oc=$('#oChal');if(challenge){const d=score-challenge.score;oc.style.display='block';oc.className=d>0?'win':'lose';oc.innerHTML=IC.swords+(d>0?` YOU WIN! +${fmt(d)}`:d===0?' DRAW!':` ${fmt(-d)} TO WIN`)}else oc.style.display='none';
  // xp toward next theme
@@ -1261,11 +1285,11 @@ function buildTitle(){
  $('#logo').innerHTML=word.map((r,ri)=>'<div class="row">'+r.map((ch,i)=>`<div class="tile" style="background:${TH.cols[(i+ri*3)%7]};animation-delay:${(i+ri*5)*.09}s">${ch}</div>`).join('')+'</div>').join('');
  const t=today();$('#dDate').textContent=t.slice(8)+'/'+t.slice(5,7);
  const db=store.dailyDate===t?store.dailyBest:0;
- const streak=store.dailyLast===t||store.dailyLast===yesterday()?store.dailyStreak:0;
+ const streak=store.dailyLast===t||store.dailyLast===yesterday()||(store.dailyLast===dayBefore(t,2)&&saverFree())?store.dailyStreak:0;
  const tgt=900+Math.floor(mulberry32(dailySeed(t))()*11)*60;dailyTarget=tgt;
  const run=resumable();$('#contBtn').hidden=!run;if(run)$('#contTxt').textContent=`CONTINUE ${MODEL[run.mode]} · ${fmt(run.score||0)}`;
  const ms=todayMissions(),md=ms.filter(x=>store.mDone.includes(x.id)).length;$('#mCount').textContent=md+'/3';
- $('#dInfo').innerHTML=`<span class="flame">${IC.flame}</span>${streak} <span class="stars">${starHtml(stars(db))}</span>`;
+ $('#dInfo').innerHTML=`<span class="flame">${IC.flame}</span>${streak}${saverHtml()} <span class="stars">${starHtml(stars(db))}</span>`;
  $('#sInfo').innerHTML=`<span style="color:#ffd60a">${IC.crown}</span> ${fmt(store.bestSpeed||0)}`;
  const cc=$('#chalCard');cc.classList.toggle('broken',!pendingChal&&badChal);
  if(pendingChal){cc.style.display='block';$('#chalTitle').textContent="YOU'VE BEEN CHALLENGED!";$('#chalInfo').innerHTML=`Beat <b>${fmt(pendingChal.score)}</b> in ${MODET[pendingChal.mode]}<br>with the exact same pieces`;$('#chalSub').textContent='Free · zero ads · no sign-up';$('#chalBtnTxt').textContent='PLAY CHALLENGE'}
@@ -1350,6 +1374,7 @@ function endDrag(e){if(!drag||e.pointerId!==drag.id)return;const d=drag;drag=nul
  ghost=null}
 cv.addEventListener('pointerup',endDrag);cv.addEventListener('pointercancel',endDrag);
 addEventListener('keydown',e=>{
+ if(e.target&&(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'))return;
  const k=e.key;
  if(k==='m'||k==='M'){const any=!store.muted||store.music;store.muted=any;store.music=!any;save();unlockAudio();setMute();SFX.click();return}
  if(state==='title'){if(k==='Enter'||k===' '){e.preventDefault();startGame('classic')}else if(k==='d'||k==='D')startGame('daily');else if(k==='s'||k==='S')startGame('speed');return}
@@ -1391,7 +1416,49 @@ if(DEV)window.BB={fx:()=>({loop:loopOn,lowFx,rm:RM,particles:particles.length,st
 
 let badChal=false;
 try{const q=new URLSearchParams(location.search).get('c');if(q!==null){const mm=/^([0-9a-z]{1,7})-([cds])-([0-9a-z]{1,5})$/i.exec(q.trim());const sd=mm?parseInt(mm[1],36):NaN,sc=mm?parseInt(mm[3],36):NaN,m=mm&&{c:'classic',d:'daily',s:'speed'}[mm[2].toLowerCase()];if(!(m&&sd>=0&&sc>=0&&sd<=4294967295&&sc<=10000000))badChal=true;else{const vv=parseInt(new URLSearchParams(location.search).get('v')||'1',10);pendingChal={seed:sd>>>0,mode:m,score:sc,v:vv>=2?2:1}}}}catch(e){}
+/* ---------------- Daily friends board (no accounts; nickname + random device id) ---------------- */
+const LB_URL='https://rvrtryuwkvamvmrdszfu.supabase.co/rest/v1/rpc/',LB_KEY='sb_publishable_BqutMj-Ry4u0YRwDh7uc9w_dDS3mNUX';
+const LB_BAD=/(fuck|shit|cunt|bitch|nigg|fag|wank|twat|dick|cock|pussy|slut|whore|rape|nazi|hitler|bastard|piss|arse|asshole|retard|spastic|paki|kike|chink)/;
+const nickOk=n=>{n=(n||'').trim();return /^[A-Za-z0-9 _.-]{2,14}$/.test(n)&&!LB_BAD.test(n.toLowerCase().replace(/[^a-z]/g,''))};
+const gOk=g=>/^[a-z0-9]{6,12}$/.test(g||'');
+function lbDev(){if(!/^[a-f0-9]{32}$/.test(store.dev||'')){const a=new Uint8Array(16);crypto.getRandomValues(a);store.dev=[...a].map(b=>b.toString(16).padStart(2,'0')).join('');save()}return store.dev}
+function lbGroups(){if(!Array.isArray(store.groups))store.groups=[];store.groups=store.groups.filter(gOk).slice(-5);return store.groups}
+function lbNewGroup(){const a=new Uint8Array(8);crypto.getRandomValues(a);return [...a].map(b=>'abcdefghjkmnpqrstuvwxyz23456789'[b%31]).join('')}
+function lbJoin(g){g=(g||'').toLowerCase().replace(/[^a-z0-9]/g,'');if(!gOk(g))return false;const gs=lbGroups().filter(x=>x!==g);gs.push(g);store.groups=gs.slice(-5);store.group=g;store.lbSent=null;save();return true}
+function lbCur(){const gs=lbGroups();if(!gOk(store.group)||!gs.includes(store.group)){if(!gs.length)lbJoin(lbNewGroup());else{store.group=gs[gs.length-1];save()}}return store.group}
+async function lbCall(fn,body){const c=new AbortController(),t=setTimeout(()=>c.abort(),6000);try{const r=await fetch(LB_URL+fn,{method:'POST',headers:{apikey:LB_KEY,'Content-Type':'application/json'},body:JSON.stringify(body),signal:c.signal,cache:'no-store'});if(!r.ok)throw new Error('http '+r.status);return await r.json()}finally{clearTimeout(t)}}
+let lbBusy=false;
+async function lbSubmitAll(){
+ const t=today();if(lbBusy||!nickOk(store.nick)||store.dailyDate!==t||!(store.dailyBest>0)||!lbGroups().length)return false;
+ const key=t+':'+store.dailyBest+':'+store.nick+':'+store.groups.join(',');if(store.lbSent===key)return true;
+ lbBusy=true;try{for(const g of store.groups)await lbCall('submit_daily',{p_group:g,p_nick:store.nick.trim(),p_device:lbDev(),p_day:t,p_score:Math.min(300000,store.dailyBest|0)});store.lbSent=key;save();return true}catch(e){return false}finally{lbBusy=false}}
+addEventListener('online',()=>{lbSubmitAll()});
+async function lbRender(){
+ const g=lbCur(),list=$('#fList'),msg=$('#fMsg');
+ $('#fNick').value=store.nick||'';$('#fCode').textContent='Group code: '+g.toUpperCase()+(lbGroups().length>1?` · ${lbGroups().length} groups`:'');
+ if(!nickOk(store.nick)){msg.textContent='Pick a nickname so friends can see your score (no account, no email).'}
+ else if(!(store.dailyDate===today()&&store.dailyBest>0))msg.textContent="Play today's Daily to post your score.";else msg.textContent='';
+ if(!navigator.onLine){list.innerHTML='';msg.textContent="You're offline. Scores will show when you're back online.";return}
+ list.textContent='Loading…';
+ await lbSubmitAll();
+ try{const rows=await lbCall('group_daily',{p_group:g,p_day:today(),p_device:lbDev()});if(lbCur()!==g)return;
+  list.innerHTML='';if(!rows.length){list.textContent='No scores yet today. Invite friends!';return}
+  rows.forEach((r,i)=>{const d=document.createElement('div');d.className='fRow'+(r.me?' me':'');const a=document.createElement('span');a.className='r';a.textContent=i+1;const n=document.createElement('span');n.className='n';n.textContent=r.nickname+(r.me?' (you)':'');const sc=document.createElement('span');sc.textContent=fmt(r.score);d.append(a,n,sc);list.append(d)})}
+ catch(e){list.innerHTML='';msg.textContent="Can't reach the scores right now. The game works as normal."}}
+function openFriends(){show('#friends');lbRender()}
+$('#fBtn').onclick=()=>{SFX.click();openFriends()};
+$('#oFriends').onclick=()=>{SFX.click();openFriends()};
+$('#fBack').onclick=()=>{SFX.click();goHomeNow()};
+$('#fNickSave').onclick=()=>{const n=$('#fNick').value.trim();if(!nickOk(n)){$('#fMsg').textContent='Use 2–14 letters or numbers, and keep it friendly.';return}store.nick=n;save();SFX.click();lbRender()};
+$('#fNick').addEventListener('keydown',e=>{if(e.key==='Enter')$('#fNickSave').click()});
+$('#fShare').onclick=async()=>{SFX.click();const u='https://blokaholic.app/?g='+lbCur(),txt="Join my Blokaholic friends board and compare today's Daily scores!";
+ try{if(navigator.share){await navigator.share({title:'Blokaholic',text:txt,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}
+ try{await navigator.clipboard.writeText(u);toast('Invite link copied!')}catch(_){toast('Code: '+lbCur().toUpperCase(),4000)}};
+$('#fJoin').onclick=()=>{SFX.click();const c=prompt('Enter a friends group code');if(c==null)return;if(lbJoin(c)){toast('Joined group!');lbRender()}else $('#fMsg').textContent="That code doesn't look right."};
+$('#tipsBtn').onclick=()=>{store.tips={};store.swapHint=false;save();SFX.click();toast('Tips will show again')};
+let pendingFriends=false;try{const gq=new URLSearchParams(location.search).get('g');if(gq!==null){if(lbJoin(gq))pendingFriends=true;try{history.replaceState(null,'',location.pathname)}catch(_){}}}catch(e){}
 document.body.classList.add('menu');setMute();layout();buildTitle();hideSvgs();requestAnimationFrame(frame);window.__booted=true;
+if(pendingFriends)setTimeout(openFriends,300);
 /* ---------------- PWA: offline + install ---------------- */
 if('serviceWorker' in navigator&&(location.protocol==='https:'||/^(localhost|127\.0\.0\.1)$/.test(location.hostname)))
  addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
