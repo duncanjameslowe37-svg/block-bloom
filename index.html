@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-+G/CAjGRoddbfw2SoXdkE6BRA7sXxRdN7ry8vl1YfOU='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-2oSf4CN+esyaBRR49JltzkzJCdQ7uHkt8KRtRG5FanU='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#7b5cd6">
 <meta name="mobile-web-app-capable" content="yes">
@@ -60,6 +60,7 @@ body.menu #hud .scorebox,body.menu #homeBtn{visibility:hidden}
 .overlay.show{opacity:1;pointer-events:auto}
 .card{width:min(380px,100%);text-align:center;transform:translateY(20px) scale(.96);transition:transform .35s cubic-bezier(.2,1.6,.4,1)}
 .overlay.show .card{transform:none}
+html:not(.booted) #title .card{visibility:hidden}
 .logo{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:10px}
 .homeFoot{display:flex;justify-content:center;align-items:center;gap:6px;margin-top:12px}.homeFoot .pvlink{margin-top:0}
 button.pvlink{font:inherit;font-size:12px;font-weight:800;color:#fff;cursor:pointer}button.pvlink[hidden]{display:none}#installBtn{opacity:.8;background:rgba(255,255,255,.14);border-radius:12px}
@@ -1457,7 +1458,7 @@ $('#fShare').onclick=async()=>{SFX.click();const u='https://blokaholic.app/?g='+
 $('#fJoin').onclick=()=>{SFX.click();const c=prompt('Enter a friends group code');if(c==null)return;if(lbJoin(c)){toast('Joined group!');lbRender()}else $('#fMsg').textContent="That code doesn't look right."};
 $('#tipsBtn').onclick=()=>{store.tips={};store.swapHint=false;save();SFX.click();toast('Tips will show again')};
 let pendingFriends=false;try{const gq=new URLSearchParams(location.search).get('g');if(gq!==null){if(lbJoin(gq))pendingFriends=true;try{history.replaceState(null,'',location.pathname)}catch(_){}}}catch(e){}
-document.body.classList.add('menu');setMute();layout();buildTitle();hideSvgs();requestAnimationFrame(frame);window.__booted=true;
+document.body.classList.add('menu');setMute();layout();buildTitle();hideSvgs();requestAnimationFrame(frame);window.__booted=true;document.documentElement.classList.add('booted');
 if(pendingFriends)setTimeout(openFriends,300);
 /* ---------------- PWA: offline + install ---------------- */
 if('serviceWorker' in navigator&&(location.protocol==='https:'||/^(localhost|127\.0\.0\.1)$/.test(location.hostname)))
