@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-2oSf4CN+esyaBRR49JltzkzJCdQ7uHkt8KRtRG5FanU='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-ucC56VtUpyd5b9o55D3t3yep/DpJh25O1dvrGd84bB4='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#7b5cd6">
 <meta name="mobile-web-app-capable" content="yes">
@@ -195,6 +195,7 @@ body.rm *,body.rm *::before,body.rm *::after{animation-duration:.001ms!important
 #quitP .bigbtn{height:62px;font-size:24px;animation:none}#quitP .subbtn{justify-content:center;font-weight:900;font-size:18px}
 #contBtn[hidden]{display:none}#contBtn{font-size:21px;height:66px;margin-bottom:12px}
 #mBtn,#fBtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:12px;padding:10px 14px;border-radius:16px;background:rgba(255,255,255,.12);font-size:15px;font-weight:900;color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+#pStreak{font-weight:900;font-size:15px;margin:2px 0 8px;color:#ffe08a;min-height:20px}#pStreak b{color:#fff}.psHint{font-size:12px;opacity:.75;color:#fff}.dsl{font-size:11px;font-weight:800;opacity:.8;text-transform:uppercase;letter-spacing:.3px;margin-right:2px}
 .saver{margin-left:6px;font-size:.9em}.saver.used{opacity:.3;filter:grayscale(1)}
 #friends .card{max-width:380px}#fNickRow{display:flex;gap:8px;margin:10px 0}#fNickRow .lbtn{flex:0 0 96px}#fNick{flex:1;min-width:0;font:inherit;font-weight:800;font-size:16px;padding:10px 12px;border-radius:12px;border:0;background:rgba(255,255,255,.9);color:#2a1450}.fMsg{font-size:13px;font-weight:800;opacity:.9;margin:6px 0;min-height:1em}.fRow{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.12);border-radius:12px;padding:8px 12px;margin:6px 0;font-weight:900;text-align:left}.fRow.me{background:rgba(255,214,10,.28)}.fRow .r{width:24px;opacity:.8}.fRow .n{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#fList{max-height:40vh;overflow:auto}
 #mBtn b{background:#ffd60a;color:#5a3800;border-radius:10px;padding:1px 8px;font-size:13px}
@@ -224,6 +225,7 @@ body.rm *,body.rm *::before,body.rm *::after{animation-duration:.001ms!important
   <div class="card">
     <div class="logo" id="logo"><div class="row"><div class="tile" style="background:#ff4d6d;animation-delay:0s">B</div><div class="tile" style="background:#ff9f1c;animation-delay:0.09s">L</div><div class="tile" style="background:#ffd60a;animation-delay:0.18s">O</div><div class="tile" style="background:#3ddc6a;animation-delay:0.27s">K</div></div><div class="row"><div class="tile" style="background:#3ddc6a;animation-delay:0.44999999999999996s">A</div><div class="tile" style="background:#2ec4ff;animation-delay:0.54s">H</div><div class="tile" style="background:#7b61ff;animation-delay:0.63s">O</div><div class="tile" style="background:#ff5fc8;animation-delay:0.72s">L</div><div class="tile" style="background:#ff4d6d;animation-delay:0.8099999999999999s">I</div><div class="tile" style="background:#ff9f1c;animation-delay:0.8999999999999999s">C</div></div></div>
     <div class="tagline">The block puzzle with zero ads. Just play.</div>
+    <div id="pStreak" aria-live="polite">🔥 Play today to start a streak</div>
     <div id="chalCard" style="display:none">
       <div class="chTitle"><svg viewBox="0 0 24 24"><path d="M3 2h3l9 9-3 3-9-9zm18 0v3l-9 9-3-3 9-9zM5 15l4 4-2 2-1-1-2 2-2-2 2-2-1-1zm14 0 2 2-1 1 2 2-2 2-2-2-1 1-2-2z"/></svg> <span id="chalTitle">YOU'VE BEEN CHALLENGED!</span></div>
       <div class="chText" id="chalInfo"></div>
@@ -407,6 +409,28 @@ const yesterday=()=>{const d=new Date();d.setDate(d.getDate()-1);return dstr(d)}
 const dayBefore=(s,n)=>{const d=new Date(s+'T12:00:00');d.setDate(d.getDate()-n);return dstr(d)};
 const mondayOf=s=>{const d=new Date(s+'T12:00:00');d.setDate(d.getDate()-((d.getDay()+6)%7));return dstr(d)};
 const saverFree=()=>store.saverWk!==mondayOf(today());
+// One shared weekly saver: it covers one missed calendar day for BOTH streaks (same day), so one ❄️ means one rule.
+const saverOk=missed=>saverFree()||store.saverDay===missed;
+const useSaver=missed=>{store.saverWk=mondayOf(today());store.saverDay=missed};
+if(!store.play||typeof store.play!=="object"){const ok=store.dailyLast===today()||store.dailyLast===yesterday();store.play={streak:ok?store.dailyStreak|0:0,last:ok?store.dailyLast:'',best:store.dailyStreak|0,got:[3,7,14,30].filter(n=>n<=(store.dailyStreak|0)&&ok)}}
+/* General PLAY streak: any mode, a day counts after 3 placed moves (or a finished game with ≥1 move). Local dates. */
+const PLAY_MS=[[3,'3-day'],[7,'7-day'],[14,'14-day'],[30,'30-day']];
+function playStreakNow(){const p=store.play,t=today();if(!p||!p.last)return 0;if(p.last===t||p.last===yesterday()||p.last>t)return p.streak;if(p.last===dayBefore(t,2)&&saverOk(yesterday()))return p.streak;return 0}
+function playDay(){
+ if(replaying)return;const p=store.play,t=today();if(p.last===t)return;
+ if(p.last&&p.last>t)return; // clock moved back / travelled west: keep the streak, don't double count
+ let saved=false;
+ if(p.last===yesterday())p.streak++;
+ else if(p.last===dayBefore(t,2)&&p.streak>0&&saverOk(yesterday())){p.streak++;useSaver(yesterday());saved=true}
+ else p.streak=1;
+ p.last=t;p.best=Math.max(p.best||0,p.streak);save();
+ tip('play','Play any game each day to grow your 🔥 streak!');
+ const ms=PLAY_MS.find(m=>m[0]===p.streak&&!(p.got||[]).includes(m[0]));
+ if(ms){p.got=(p.got||[]).concat(ms[0]);let msg='🔥 '+ms[1]+' streak!';
+  const ti=THEMES.findIndex((th,i)=>!themeOpen(i));
+  if(ti>0){store.giftThemes.push(ti);msg+=' New theme: '+THEMES[ti].name}else{store.xp+=50;msg+=' +50 XP'}
+  save();setTimeout(()=>{toast(msg,3200);SFX.unlock();buzz(30)},saved?3400:500)}
+ if(saved)setTimeout(()=>toast('Streak saved! ❄️',3000),500)}
 const saverHtml=()=>`<span class="saver${saverFree()?'':' used'}" title="${saverFree()?'Streak saver ready: covers one missed day this week':'Streak saver used this week, back on Monday'}">❄️</span>`;
 const fmt=n=>Math.round(n).toLocaleString('en-GB');
 
@@ -971,7 +995,7 @@ function place(i,gx,gy){
  for(const [x,y] of sh.cells)board[gy+y][gx+x]={c:pc.c,t:now};
  tray[i]=null;ghost=null;idleReset();
  try{
- placedN++;if(F&&(!store.seenHint||hintAgain)){store.seenHint=true;hintAgain=false;hint=null}
+ placedN++;if(placedN===3&&!replaying)playDay();if(F&&(!store.seenHint||hintAgain)){store.seenHint=true;hintAgain=false;hint=null}
  let pts=sh.cells.length;
  if(F){try{SFX.place();buzz(8)}catch(_){}}
  const cxp=L.bx+(gx+sh.wd/2)*L.cell,cyp=L.by+(gy+sh.ht/2)*L.cell;
@@ -1088,7 +1112,7 @@ function makeCard(){
  const head=win?'I BEAT YOUR SCORE!':wasBest?'NEW BEST!':perfects?'PERFECT CLEAR!':MODEL[mode]+' MODE';
  C.font=F(900,64);const hw=C.measureText(head).width+80;C.fillStyle='#ffd60a';rr(W2/2-hw/2,320,hw,104,30,C);C.fill();C.fillStyle='#6b3b00';C.fillText(head,W2/2,374);
  C.fillStyle='#fff';C.font=F(900,210);C.shadowColor='rgba(0,0,0,.25)';C.shadowOffsetY=10;C.fillText(fmt(score),W2/2,560);C.shadowOffsetY=0;C.shadowColor='transparent';
- C.font=F(800,44);C.fillText(`${MODEL[mode]}  ·  COMBO ×${maxComboRun}${perfects?'  ·  PERFECT ×'+perfects:''}`,W2/2,690);
+ C.font=F(800,44);{let ln=`${MODEL[mode]}  ·  COMBO ×${maxComboRun}${perfects?'  ·  PERFECT ×'+perfects:''}`;const ps=playStreakNow();if(ps>=2){const l2=ln+`  ·  🔥 ${ps} DAYS`;if(C.measureText(l2).width<W2-120)ln=l2}C.fillText(ln,W2/2,690)}
  C.save();C.translate(140,175);C.rotate(-.18);C.fillStyle='#3ddc6a';C.beginPath();C.arc(0,0,92,0,7);C.fill();C.strokeStyle='#fff';C.lineWidth=8;C.stroke();C.fillStyle='#fff';C.font=F(900,40);C.fillText('ZERO',0,-20);C.fillText('ADS',0,24);C.restore();
  const bs=430,cs=bs/N,ox=W2/2-bs/2,oy=760;C.fillStyle='rgba(40,10,70,.3)';rr(ox-14,oy-14,bs+28,bs+28,30,C);C.fill();
  for(let y=0;y<N;y++)for(let x=0;x<N;x++){const v=board[y][x];if(v)drawCell(ox+x*cs,oy+y*cs,cs,TH.cols[v.c],1,0,C);else{C.fillStyle='rgba(255,255,255,.1)';rr(ox+x*cs+4,oy+y*cs+4,cs-8,cs-8,10,C);C.fill()}}
@@ -1239,13 +1263,13 @@ let endReason='';
 function stars(s){if(!dailyTarget)return 0;return s>=dailyTarget*12?3:s>=dailyTarget*4?2:s>=dailyTarget?1:0}
 function starHtml(k){let h='';for(let i=0;i<3;i++)h+=`<span class="${i<k?'':'off'}">${IC.star}</span>`;return h}
 let streakSaved=false;
-function showOver(){streakSaved=false;
+function showOver(){streakSaved=false;if(placedN>=1&&endReason!=='quit')playDay();
  state='over';
  const prev=bestNow();const isBest=score>prev&&score>0;wasBest=isBest;
  if(mode==='daily'&&!challenge){
   const t=today();if(store.dailyDate!==t){store.dailyDate=t;store.dailyBest=0}
   store.dailyBest=Math.max(store.dailyBest,score);
-  if(store.dailyLast!==t){if(store.dailyLast===yesterday())store.dailyStreak++;else if(store.dailyLast===dayBefore(t,2)&&store.dailyStreak>0&&saverFree()){store.dailyStreak++;store.saverWk=mondayOf(t);streakSaved=true;setTimeout(()=>toast('Streak saved! ❄️',3000),900)}else store.dailyStreak=1;store.dailyLast=t}
+  if(store.dailyLast!==t){if(store.dailyLast===yesterday())store.dailyStreak++;else if(store.dailyLast===dayBefore(t,2)&&store.dailyStreak>0&&saverOk(yesterday())){const fresh=saverFree();store.dailyStreak++;useSaver(yesterday());streakSaved=true;if(fresh)setTimeout(()=>toast('Streak saved! ❄️',3000),900)}else store.dailyStreak=1;store.dailyLast=t}
  }else if(mode==='daily'){}
  else if(mode==='speed')store.bestSpeed=Math.max(store.bestSpeed||0,score);
  else store.best=Math.max(store.best,score);
@@ -1262,7 +1286,7 @@ function showOver(){streakSaved=false;
   $('#oNearTxt').innerHTML=score/prev>=.8?`SO CLOSE! −${fmt(prev-score)}`:`${Math.round(score/prev*100)}% of <svg viewBox="0 0 24 24" style="color:#ffd60a"><path d="M3 7l4.5 4L12 4l4.5 7L21 7l-2 12H5z"/></svg>`}
  else near.style.display='none';
  const dd=$('#oDaily');
- if(mode==='daily'){dd.style.display='block';dd.innerHTML=starHtml(stars(score))+`<div style="font-size:14px;font-weight:900;color:#fff;margin-top:2px"><span class="flame">${IC.flame}</span> ${store.dailyStreak}${saverHtml()}${streakSaved?'<div style="font-size:13px;color:#bfe9ff">Streak saved! ❄️</div>':''}</div>`}else dd.style.display='none';
+ if(mode==='daily'){dd.style.display='block';dd.innerHTML=starHtml(stars(score))+`<div style="font-size:14px;font-weight:900;color:#fff;margin-top:2px"><span class="dsl">Puzzle streak</span> ${store.dailyStreak}${saverHtml()}${streakSaved?'<div style="font-size:13px;color:#bfe9ff">Streak saved! ❄️</div>':''}</div>`}else dd.style.display='none';
  {const ob=$('#oFriends');ob.hidden=!(mode==='daily'&&!challenge);if(!ob.hidden)lbSubmitAll()}
  $('#oShare').style.display='flex';
  const oc=$('#oChal');if(challenge){const d=score-challenge.score;oc.style.display='block';oc.className=d>0?'win':'lose';oc.innerHTML=IC.swords+(d>0?` YOU WIN! +${fmt(d)}`:d===0?' DRAW!':` ${fmt(-d)} TO WIN`)}else oc.style.display='none';
@@ -1286,11 +1310,12 @@ function buildTitle(){
  $('#logo').innerHTML=word.map((r,ri)=>'<div class="row">'+r.map((ch,i)=>`<div class="tile" style="background:${TH.cols[(i+ri*3)%7]};animation-delay:${(i+ri*5)*.09}s">${ch}</div>`).join('')+'</div>').join('');
  const t=today();$('#dDate').textContent=t.slice(8)+'/'+t.slice(5,7);
  const db=store.dailyDate===t?store.dailyBest:0;
- const streak=store.dailyLast===t||store.dailyLast===yesterday()||(store.dailyLast===dayBefore(t,2)&&saverFree())?store.dailyStreak:0;
+ const streak=store.dailyLast===t||store.dailyLast===yesterday()||(store.dailyLast===dayBefore(t,2)&&saverOk(yesterday()))?store.dailyStreak:0;
+ {const ps=playStreakNow(),pe=$('#pStreak');pe.innerHTML=ps?`🔥 <b>${ps}-day streak</b>${saverHtml()}${store.play.last===t?'':' <span class="psHint">· play today to keep it</span>'}`:`🔥 Play today to start a streak${saverHtml()}`}
  const tgt=900+Math.floor(mulberry32(dailySeed(t))()*11)*60;dailyTarget=tgt;
  const run=resumable();$('#contBtn').hidden=!run;if(run)$('#contTxt').textContent=`CONTINUE ${MODEL[run.mode]} · ${fmt(run.score||0)}`;
  const ms=todayMissions(),md=ms.filter(x=>store.mDone.includes(x.id)).length;$('#mCount').textContent=md+'/3';
- $('#dInfo').innerHTML=`<span class="flame">${IC.flame}</span>${streak}${saverHtml()} <span class="stars">${starHtml(stars(db))}</span>`;
+ $('#dInfo').innerHTML=`<span class="dsl" title="Daily puzzle streak">Puzzle streak</span> ${streak}${saverHtml()} <span class="stars">${starHtml(stars(db))}</span>`;
  $('#sInfo').innerHTML=`<span style="color:#ffd60a">${IC.crown}</span> ${fmt(store.bestSpeed||0)}`;
  const cc=$('#chalCard');cc.classList.toggle('broken',!pendingChal&&badChal);
  if(pendingChal){cc.style.display='block';$('#chalTitle').textContent="YOU'VE BEEN CHALLENGED!";$('#chalInfo').innerHTML=`Beat <b>${fmt(pendingChal.score)}</b> in ${MODET[pendingChal.mode]}<br>with the exact same pieces`;$('#chalSub').textContent='Free · zero ads · no sign-up';$('#chalBtnTxt').textContent='PLAY CHALLENGE'}
