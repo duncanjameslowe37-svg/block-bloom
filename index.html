@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-ucC56VtUpyd5b9o55D3t3yep/DpJh25O1dvrGd84bB4='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-fhb7x4ni9NVytFpYJKxjp/Rdw/lbiQUuxwwmN/Dyl1E='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#7b5cd6">
 <meta name="mobile-web-app-capable" content="yes">
@@ -632,7 +632,8 @@ addEventListener('keydown',()=>unlockAudio(),{capture:true});
 
 /* ---------------- layout ---------------- */
 function layout(){
- W=innerWidth;H=innerHeight;DPR=Math.min(devicePixelRatio||1,lowFx?1.5:2.5);
+ {const vv=window.visualViewport,de=document.documentElement;W=Math.round(Math.min(innerWidth,de.clientWidth||innerWidth,vv&&vv.width>0?vv.width:1e9));H=Math.round(Math.min(innerHeight,vv&&vv.height>0?vv.height:1e9))}
+ if(scrollX||scrollY)scrollTo(0,0);DPR=Math.min(devicePixelRatio||1,lowFx?1.5:2.5);
  cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);
  const hudB=$('#hud').getBoundingClientRect().bottom+4;
  const land=W>H*1.15;L.land=land;
@@ -644,7 +645,7 @@ function layout(){
   L.swap={x:L.bx+S+gap+tw/2-32,y:L.by+S-64};
  }else{
   const S=Math.min(W-24,(H-hudB-88)/1.62,600);L.S=S;L.cell=S/N;
-  const total=S*1.62+72;L.bx=(W-S)/2;L.by=hudB+L.cell*1.15+Math.max(0,(H-hudB-total)/2);
+  const total=S*1.62+72;L.bx=Math.max(12,(W-S)/2);L.by=hudB+L.cell*1.15+Math.max(0,(H-hudB-total)/2);
   const th=Math.min(S*.44,H-(L.by+S)-80);
   L.slots=[0,1,2].map(i=>({x:L.bx+i*S/3,y:L.by+S+L.cell*.25,w:S/3,h:th}));
   L.swap={x:W/2-32,y:Math.min(L.slots[0].y+th+2,H-74)};
@@ -740,6 +741,7 @@ function draw(){
  ctx.save();ctx.translate(sx,sy);
  const {bx,by,S,cell}=L;
  // board
+ ctx.fillStyle='rgba(12,6,30,.55)';rr(bx-8,by-8,S+16,S+16,18);ctx.fill(); // solid base so background bubbles never show through empty cells
  ctx.fillStyle=TH.board;rr(bx-8,by-8,S+16,S+16,18);ctx.fill();
  if(bgPulse>0){ctx.strokeStyle=`rgba(255,255,255,${bgPulse*.8})`;ctx.lineWidth=4;rr(bx-8,by-8,S+16,S+16,18);ctx.stroke()}
  // preview
@@ -754,6 +756,7 @@ function draw(){
  for(let y=0;y<N;y++)for(let x=0;x<N;x++){
   const X=bx+x*cell,Y=by+y*cell,c=board[y][x];
   ctx.fillStyle=TH.slot;rr(X+cell*.06,Y+cell*.06,cell*.88,cell*.88,cell*.18);ctx.fill();
+  if(!c){ctx.strokeStyle='rgba(255,255,255,.16)';ctx.lineWidth=1.5;ctx.stroke()}
   if(c){
    let s=cell,age=(now-c.t)/180;if(age<1){s=cell*(1+.18*Math.sin(age*Math.PI))}
    let col=TH.cols[c.c];
@@ -1418,7 +1421,7 @@ addEventListener('keydown',e=>{
  if(k==='Tab'){e.preventDefault();for(let s=1;s<=3;s++){const j=(kb.i+s)%3;if(tray[j]){kb.i=j;const t=tray[j].p;kb.gx=Math.min(kb.gx,N-t.wd);kb.gy=Math.min(kb.gy,N-t.ht);break}}return}
  if(k==='Enter'||k===' '){e.preventDefault();if(fits(sh,kb.gx,kb.gy)){const i=kb.i,gx=kb.gx,gy=kb.gy;kb=null;place(i,gx,gy)}else SFX.bad()}
 });
-addEventListener('resize',()=>{layout();kick()});
+{let rT=0;const relayout=()=>{layout();kick();clearTimeout(rT);rT=setTimeout(()=>{layout();kick()},350)};addEventListener('resize',relayout);addEventListener('orientationchange',relayout);if(window.visualViewport)visualViewport.addEventListener('resize',relayout);document.addEventListener('visibilitychange',()=>{if(!document.hidden)relayout()})}
 addEventListener('pointerdown',kick,{capture:true});addEventListener('keydown',kick,{capture:true});document.addEventListener('visibilitychange',()=>{if(!document.hidden)kick()});
 addEventListener('click',()=>unlockAudio(),{capture:true});addEventListener('touchend',()=>unlockAudio(),{capture:true,passive:true});
 $('#rmBtn').onclick=()=>{store.reduceMotion=!RM;save();applyRM();SFX.click()};RMQ.addEventListener&&RMQ.addEventListener('change',applyRM);applyRM();hideSvgs();
@@ -1433,7 +1436,7 @@ if(DEV)window.BB={fx:()=>({loop:loopOn,lowFx,rm:RM,particles:particles.length,st
  slot:i=>slotCenter(i),
  swapPoint:()=>({x:L.swap.x+32,y:L.swap.y+32}),
  // test-only: build a stuck board (isolated diagonal holes, 3x3 pieces) with n swaps banked
- dev:{preview(){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=null;for(let x=1;x<N;x++)board[N-1][x]={c:x%7,t:-1e9};for(let y=0;y<N-1;y++)board[y][0]={c:(y+3)%7,t:-1e9};tray=[{p:PIECES.find(p=>p.cells.length===1),c:2,born:now-2000},tray[1],tray[2]];kb={i:0,gx:0,gy:N-1};kick()},stuck(n){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=(x===y||(y===0&&x<3))?null:{c:(x+y)%7,t:-1e9};tray=[0,1,2].map(()=>({p:PIECES.find(p=>p.cells.length===9),c:1,born:now}));swaps=n;meter=0;stuck=false;checkStuck()},
+ geo:()=>({W,H,iw:innerWidth,cw:document.documentElement.clientWidth,bx:L.bx,by:L.by,S:L.S,sx:scrollX}),dev:{preview(){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=null;for(let x=1;x<N;x++)board[N-1][x]={c:x%7,t:-1e9};for(let y=0;y<N-1;y++)board[y][0]={c:(y+3)%7,t:-1e9};tray=[{p:PIECES.find(p=>p.cells.length===1),c:2,born:now-2000},tray[1],tray[2]];kb={i:0,gx:0,gy:N-1};kick()},stuck(n){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=(x===y||(y===0&&x<3))?null:{c:(x+y)%7,t:-1e9};tray=[0,1,2].map(()=>({p:PIECES.find(p=>p.cells.length===9),c:1,born:now}));swaps=n;meter=0;stuck=false;checkStuck()},
   fill(v){addSwapMeter(v)},place(i,gx,gy){if(state==='play'&&tray[i]&&fits(tray[i].p,gx,gy)){place(i,gx,gy);return true}return false},swap(i){doSwap(i)},board:()=>board.map(r=>r.map(c=>c?c.c+1:0).join('')).join('/'),resumeLog:()=>store.run&&store.run.log.length,dealSizes(seed,n,md,v1){const r=mulberry32(seed);const out=[];for(let d=0;d<n;d++)out.push(dealPieces(r,d,md||'classic',!!v1).map(t=>t.p.cells.length));return out},comboMult:c=>comboMult(c),colour:arr=>colourLine(arr.map(c=>({c}))),gifts:()=>({clearsN,nextGift}),dailySeed:d=>dailySeed(d),dailyOk:sd=>dailyOk(sd),stars:s=>stars(s),target:()=>dailyTarget,speed:()=>({speedT:Math.round(speedT),speedMax:Math.round(speedMax),strikes}),idle(ms){idleT=ms;idleSec=99;idleSince=0},fitT(ms){fitT=ms},emptyTray(){tray=[null,null,null]},stuckSoft(ms){stuckSoft=ms},gift(t){openGift(t)},v1:()=>V1,mult2:()=>mult2},
  challengeLink:()=>challengeLink(),
  texts:()=>texts.map(t=>t.s),
