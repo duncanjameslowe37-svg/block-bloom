@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-2SLZRQiiEyvis/Ls+A49ZVYE0M6N/Gr9CBbaNB7PXyc='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-ZPabGmE/GmG6VQVeqdXgzvHw+hBqOAkmM6WsJdVv+aM='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#7b5cd6">
 <meta name="mobile-web-app-capable" content="yes">
@@ -281,8 +281,22 @@ body.rm *,body.rm *::before,body.rm *::after{animation-duration:.001ms!important
   <div class="fMsg">One phone, one board. Take turns: place your 3 blocks, then pass the phone. Most points when the board fills up wins!</div>
   <div class="duoNames"><input id="dN1" maxlength="12" placeholder="Player 1" autocomplete="off" aria-label="Player 1 name (optional)"><input id="dN2" maxlength="12" placeholder="Player 2" autocomplete="off" aria-label="Player 2 name (optional)"></div>
   <button class="bigbtn" id="duoGo" style="height:62px;font-size:24px">PLAY</button></div>
-  <div id="raceSec"></div>
+  <div id="raceSec" class="dSec"><div class="t1">🏁 ONLINE RACE</div>
+  <div class="fMsg">Race a friend on their own phone. Same pieces for both of you, 2 minutes, highest score wins. Just a nickname, no account.</div>
+  <div class="duoNames"><input id="rNick" maxlength="14" placeholder="Your nickname" autocomplete="off" aria-label="Race nickname"></div>
+  <div class="row2"><button class="lbtn gold" id="rNew">New race</button><button class="lbtn" id="rJoin">Join with code</button></div>
+  <div id="rMsg" class="fMsg" role="status"></div></div>
   <button class="bigbtn" id="duoBack" style="height:54px;font-size:20px;margin-top:14px;background:rgba(255,255,255,.18);box-shadow:none">BACK</button>
+</div></div>
+<div id="race" class="overlay" inert aria-hidden="true"><div class="card">
+  <div style="font-size:26px;font-weight:900">🏁 RACE <span id="raCode"></span></div>
+  <div id="raInfo" class="fMsg">Same pieces for everyone · 2 minutes · highest score wins</div>
+  <div id="raNickRow" class="duoNames"><input id="raNick" maxlength="14" placeholder="Your nickname" autocomplete="off" aria-label="Nickname"></div>
+  <div id="raMsg" class="fMsg" role="status"></div>
+  <div id="raList"></div>
+  <button class="bigbtn" id="raGo" style="height:62px;font-size:24px">START</button>
+  <div class="row2"><button class="lbtn gold" id="raShare">Invite friend</button><button class="lbtn" id="raRefresh">Refresh</button></div>
+  <button class="bigbtn" id="raBack" style="height:54px;font-size:20px;margin-top:12px;background:rgba(255,255,255,.18);box-shadow:none">HOME</button>
 </div></div>
 <div id="hand" class="overlay" inert aria-hidden="true"><div class="card">
   <div class="lbl" id="hTurnNo">TURN 1</div>
@@ -494,7 +508,7 @@ function randPiece(r){let x=r()*TOTALW;for(const p of PIECES){x-=p.w;if(x<=0)ret
 /* ---------------- state ---------------- */
 let board=[],tray=[null,null,null],score=0,shown=0,combo=0,since=0,mode='classic',state='title',drng=Math.random,dailyTarget=0;
 let gameSeed=0,dealN=0,grng=Math.random,gift=null,nextGift=4,clearsN=0,mult2=0,perfects=0,newBestHit=false,challenge=null,chalWon=false,pendingChal=null;
-let duo=null,V1=false,SV=3,replaying=false,tut=false,runLog=null,meterOver=0;// V1 = original generator/scoring (old challenge links)
+let race=null,raceT=0,raceSecShown=-1,duo=null,V1=false,SV=3,replaying=false,tut=false,runLog=null,meterOver=0;// V1 = original generator/scoring (old challenge links)
 const IDLE=45000,IDLE_WARN=10000;let idleT=IDLE,idleSec=99,idleSince=0;
 const STUCK_AUTO=2900,STUCK_PANEL=20000;let stuckShown=false,stuckLeft=0,stuckAt=0,stuckActive=false,stuckSoft=0;
 const FIT_DELAY=10000;let fitT=FIT_DELAY,fitKey='';
@@ -540,7 +554,7 @@ function dealTray(){
  if(duo&&dealN>0&&!replaying&&state==='play')duoSwitch();
  let ps=tut&&dealN<2?TUT()[dealN]:dealPieces(drng,dealN,mode,V1);dealN++;
  // Classic only (never Daily/challenges, which must stay identical for everyone): if nothing fits and no swap is banked, re-draw the biggest piece up to 3 times
- if(!V1&&mode==='classic'&&!challenge&&swaps===0)for(let k=0;k<3&&!ps.some(t=>anyFit(t.p));k++){let bi=0;ps.forEach((t,j)=>{if(t.p.cells.length>ps[bi].p.cells.length)bi=j});ps[bi]={p:randPiece(drng),c:ps[bi].c}}
+ if(!V1&&mode==='classic'&&!challenge&&!race&&swaps===0)for(let k=0;k<3&&!ps.some(t=>anyFit(t.p));k++){let bi=0;ps.forEach((t,j)=>{if(t.p.cells.length>ps[bi].p.cells.length)bi=j});ps[bi]={p:randPiece(drng),c:ps[bi].c}}
  tray=ps.map(t=>({p:t.p,c:t.c,born:now}));
  trayT=now;
 }
@@ -923,6 +937,7 @@ function update(dt){
   if(speedT<=0)strike()}
  if(state==='play'){const k=fitSig();if(k!==fitKey){fitKey=k;fitT=FIT_DELAY}else if(fitT>0&&!document.hidden&&!document.querySelector('.overlay.show,#quitP.show'))fitT-=rawDt}else{fitKey='';fitT=FIT_DELAY}
  if(stuckActive&&stuck&&state==='play'&&!document.hidden&&!document.querySelector('.overlay.show,#quitP.show')){if(!stuckShown){stuckSoft-=rawDt;const g=stuckGlow();if(g!==glowOn){glowOn=g;updateSwapUI();if(g&&mode!=='speed')tip('stuck','Stuck! Tap SWAP to change a piece')}if(stuckSoft<=0)showStuckPanel()}else{stuckLeft-=rawDt;if(stuckLeft<=0)autoSwap(true)}}
+ if(race&&state==='play'&&!document.hidden&&!(gift&&now-gift.t0<1000)&&!document.querySelector('.overlay.show,#quitP.show')){raceT-=rawDt;const q=Math.ceil(Math.max(0,raceT)/1000);if(q!==raceSecShown){raceSecShown=q;updateModeTag();if(q<=5&&q>0)SFX.softTick()}if(raceT<=0){raceT=0;endGame('time')}}
  // idle move timer (Classic/Daily/challenges): pauses when hidden, on menus/modals, during gift reveal, and while a piece is held
  if(idleOn()){idleT-=dt;
   if(idleT<=IDLE_WARN&&!idleSince)idleSince=now;
@@ -1224,6 +1239,7 @@ function checkStuck(){
  stuck=false;updateSwapUI();endGame('space')}
 /* ---- speed ---- */
 function updateModeTag(){
+ if(race){const t=Math.max(0,Math.ceil(raceT/1000));$('#modeTag').textContent='🏁 RACE '+Math.floor(t/60)+':'+String(t%60).padStart(2,'0');return}
  if(duo){const o=duo.cur^1;$('#modeTag').textContent=duo.n[duo.cur].toUpperCase()+'\'S TURN · '+duo.n[o]+' '+fmt(duo.sc[o]);return}
  const hearts=()=>{let h='';for(let k=0;k<3;k++)h+=`<span class="heart ${k<strikes?'':'off'}">${IC.heart}</span>`;return h};
  if(challenge){$('#modeTag').innerHTML=IC.swords+' BEAT '+fmt(challenge.score)+(mode==='speed'?' '+hearts():'');return}
@@ -1240,11 +1256,12 @@ function strike(){
 
 function startGame(m,opt={}){
  unlockAudio();mode=m;challenge=opt.challenge||null;tipQ=[];chalWon=false;{const h=$('#iosHint');if(h)h.classList.remove('show')}
+ race=opt.race?{code:opt.race.code}:null;raceT=120000;raceSecShown=-1;
  duo=opt.duo?{n:opt.duo.n.slice(),sc:[0,0],cb:[[0,0],[0,0]],cur:0,turn:1}:null;
  V1=opt.v===1||!!(challenge&&challenge.v===1);
  SV=V1?1:(opt.v===2||opt.v===3)?opt.v:challenge&&challenge.v===2?2:(m==='daily'&&!challenge&&today()<V3DAY)?2:3;
  gameSeed=(opt.seed!=null?opt.seed:m==='daily'?dailySeed(today()):(Math.random()*4294967296))>>>0;
- tut=opt.tut!=null?!!opt.tut:(m==='classic'&&!challenge&&!opt.seed&&!store.games&&!V1&&!duo);meterOver=0;
+ tut=opt.tut!=null?!!opt.tut:(m==='classic'&&!challenge&&!opt.seed&&!store.games&&!V1&&!duo&&!race);meterOver=0;
  drng=mulberry32(gameSeed);srng=mulberry32(gameSeed^0x9e3779b9);grng=mulberry32(gameSeed^0x51f7a3c1);
  dealN=0;gift=null;clearsN=0;nextGift=3+Math.floor(grng()*2);mult2=0;perfects=0;newBestHit=false;board=emptyBoard();score=0;shown=0;scoreEl.textContent='0';combo=0;since=0;celebrated=false;maxComboRun=0;linesRun=0;
  particles=[];fx=[];texts=[];drag=null;kb=null;ghost=null;
@@ -1258,13 +1275,14 @@ function startGame(m,opt={}){
  if(m==='speed'){speedFirst=true;speedGrace=true;speedMax=SPEED_FIRST;speedT=speedMax;introT0=now;introStep=-1}
  mus.speed=m==='speed';setMusicTempo(m==='speed'?128:118);
  updateModeTag();updateSwapUI();updateX2();
- if(!challenge&&!replaying){if(m==='daily')tip('daily','Same puzzle for everyone today. Play daily for a streak!');else if(m==='speed')tip('speed','Speed: place pieces before the timer runs out!')}
+ if(!challenge&&!replaying&&!race){if(m==='daily')tip('daily','Same puzzle for everyone today. Play daily for a streak!');else if(m==='speed')tip('speed','Speed: place pieces before the timer runs out!')}
  dealTray();
  state='play';hideAll();setMusicMode('play');setMusicLevel(0);musTargets();
   hint=null;if(!store.seenHint)showHint();
- runLog=m==='speed'||duo?null:[];
- if(duo){celebrated=true;duoHand()}
- if(!opt.resume){store.games++;saveRun()}
+ runLog=m==='speed'||duo||race?null:[];
+ if(duo||race)celebrated=true;
+ if(duo)duoHand();
+ if(!opt.resume){store.games++;if(!race)saveRun()}
  updateBest();
 }
 function garden(r){const out=[],cnt=4+Math.floor(r()*3);for(let k=0;k<cnt;k++){const x=Math.floor(r()*4),y=Math.floor(r()*N),c=Math.floor(r()*7);out.push([x,y,c])}return out}
@@ -1293,6 +1311,7 @@ function endGame(reason){
  runLog=null;delete store.run;$('#quitP').classList.remove('show');
  mus.speed=false;setMusicTempo(118);setMusicMode('calm');state='ending';endT=now;drag=null;kb=null;armed=false;stuck=false;updateSwapUI();
  endReason=reason;updateX2();
+ if(reason==='time'&&race){say('TIME UP!',L.bx+L.S/2,L.by+L.S/2,L.cell*.9,'#ffd60a',{life:1100,rise:0})}
  if(reason==='idle'){say('OUT OF TIME',L.bx+L.S/2,L.by+L.S/2,L.cell*.75,'#ffb3c1',{life:1100,rise:0});shake=8}
  else if(reason==='quit'){}
  else if(reason!=='time')setTimeout(()=>{say('NO SPACE',L.bx+L.S/2,L.by+L.S/2,L.cell*.8,'#fff',{life:900,rise:0})},100);
@@ -1305,6 +1324,7 @@ function starHtml(k){let h='';for(let i=0;i<3;i++)h+=`<span class="${i<k?'':'off
 let streakSaved=false;
 function showOver(){streakSaved=false;if(placedN>=1&&endReason!=='quit')playDay();
  if(duo){duoOver();return}
+ if(race){raceOver();return}
  state='over';
  const prev=bestNow();const isBest=score>prev&&score>0;wasBest=isBest;
  if(mode==='daily'&&!challenge){
@@ -1425,7 +1445,7 @@ function goHome(){
   if(score>0){$('#qScore').textContent=fmt(score);q.classList.add('show');document.body.classList.add('menu');kick();return}
   runLog=null;delete store.run;save()}
  goHomeNow()}
-function goHomeNow(){duo=null;mus.speed=false;setMusicTempo(118);armed=false;stuck=false;state='title';updateSwapUI();setMusicMode('calm');state='title';drag=null;kb=null;buildTitle();show('#title')}
+function goHomeNow(){if(race&&state==='play'&&!score&&store.raceDone){delete store.raceDone[race.code];save()}duo=null;race=null;mus.speed=false;setMusicTempo(118);armed=false;stuck=false;state='title';updateSwapUI();setMusicMode('calm');state='title';drag=null;kb=null;buildTitle();show('#title')}
 $('#oShare').onclick=()=>openBrag();
 $('#oChallenge').onclick=()=>{SFX.click();shareChallenge()};
 $('#bBack').onclick=()=>{SFX.click();show('#over')};
@@ -1495,7 +1515,7 @@ if(DEV)window.BB={fx:()=>({loop:loopOn,lowFx,rm:RM,particles:particles.length,st
  slot:i=>slotCenter(i),
  swapPoint:()=>({x:L.swap.x+32,y:L.swap.y+32}),
  // test-only: build a stuck board (isolated diagonal holes, 3x3 pieces) with n swaps banked
- geo:()=>({W,H,iw:innerWidth,cw:document.documentElement.clientWidth,bx:L.bx,by:L.by,S:L.S,sx:scrollX}),dev:{noGift(){nextGift=1e9},duo:()=>duo&&{n:duo.n,sc:duo.sc.slice(),cur:duo.cur,turn:duo.turn,score},link:()=>challengeLink(),today:()=>today(),gridKeep(rows){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=rows[y][x]==='1'?{c:(x+2*y)%7,t:-1e9}:null;tray[0]={p:PIECES.find(p=>p.cells.length===1),c:2,born:now}},grid(rows){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=rows[y][x]==='1'?{c:(x+2*y)%7,t:-1e9}:null;tray[0]={p:PIECES.find(p=>p.cells.length===1),c:2,born:now};combo=0;since=0;checkStuck()},sv:()=>SV,sc:()=>score,preview(){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=null;for(let x=1;x<N;x++)board[N-1][x]={c:x%7,t:-1e9};for(let y=0;y<N-1;y++)board[y][0]={c:(y+3)%7,t:-1e9};tray=[{p:PIECES.find(p=>p.cells.length===1),c:2,born:now-2000},tray[1],tray[2]];kb={i:0,gx:0,gy:N-1};kick()},stuck(n){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=(x===y||(y===0&&x<3))?null:{c:(x+y)%7,t:-1e9};tray=[0,1,2].map(()=>({p:PIECES.find(p=>p.cells.length===9),c:1,born:now}));swaps=n;meter=0;stuck=false;checkStuck()},
+ geo:()=>({W,H,iw:innerWidth,cw:document.documentElement.clientWidth,bx:L.bx,by:L.by,S:L.S,sx:scrollX}),dev:{noGift(){nextGift=1e9},race:()=>race&&{code:race.code,t:raceT,seed:gameSeed,score},raceEnd(){raceT=1},tray:()=>tray.map(t=>t&&t.p.cells.length+':'+t.c).join(','),duo:()=>duo&&{n:duo.n,sc:duo.sc.slice(),cur:duo.cur,turn:duo.turn,score},link:()=>challengeLink(),today:()=>today(),gridKeep(rows){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=rows[y][x]==='1'?{c:(x+2*y)%7,t:-1e9}:null;tray[0]={p:PIECES.find(p=>p.cells.length===1),c:2,born:now}},grid(rows){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=rows[y][x]==='1'?{c:(x+2*y)%7,t:-1e9}:null;tray[0]={p:PIECES.find(p=>p.cells.length===1),c:2,born:now};combo=0;since=0;checkStuck()},sv:()=>SV,sc:()=>score,preview(){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=null;for(let x=1;x<N;x++)board[N-1][x]={c:x%7,t:-1e9};for(let y=0;y<N-1;y++)board[y][0]={c:(y+3)%7,t:-1e9};tray=[{p:PIECES.find(p=>p.cells.length===1),c:2,born:now-2000},tray[1],tray[2]];kb={i:0,gx:0,gy:N-1};kick()},stuck(n){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=(x===y||(y===0&&x<3))?null:{c:(x+y)%7,t:-1e9};tray=[0,1,2].map(()=>({p:PIECES.find(p=>p.cells.length===9),c:1,born:now}));swaps=n;meter=0;stuck=false;checkStuck()},
   fill(v){addSwapMeter(v)},place(i,gx,gy){if(state==='play'&&tray[i]&&fits(tray[i].p,gx,gy)){place(i,gx,gy);return true}return false},swap(i){doSwap(i)},board:()=>board.map(r=>r.map(c=>c?c.c+1:0).join('')).join('/'),resumeLog:()=>store.run&&store.run.log.length,dealSizes(seed,n,md,v1){const r=mulberry32(seed);const out=[];for(let d=0;d<n;d++)out.push(dealPieces(r,d,md||'classic',!!v1).map(t=>t.p.cells.length));return out},comboMult:c=>comboMult(c),colour:arr=>colourLine(arr.map(c=>({c}))),gifts:()=>({clearsN,nextGift}),dailySeed:d=>dailySeed(d),dailyOk:sd=>dailyOk(sd),stars:s=>stars(s),target:()=>dailyTarget,speed:()=>({speedT:Math.round(speedT),speedMax:Math.round(speedMax),strikes}),idle(ms){idleT=ms;idleSec=99;idleSince=0},fitT(ms){fitT=ms},emptyTray(){tray=[null,null,null]},stuckSoft(ms){stuckSoft=ms},gift(t){openGift(t)},v1:()=>V1,mult2:()=>mult2},
  challengeLink:()=>challengeLink(),
  texts:()=>texts.map(t=>t.s),
@@ -1544,10 +1564,59 @@ $('#fShare').onclick=async()=>{SFX.click();const u='https://blokaholic.app/?g='+
  try{await navigator.clipboard.writeText(u);toast('Invite link copied!')}catch(_){toast('Code: '+lbCur().toUpperCase(),4000)}};
 $('#fJoin').onclick=()=>{SFX.click();const c=prompt('Enter a friends group code');if(c==null)return;if(lbJoin(c)){toast('Joined group!');lbRender()}else $('#fMsg').textContent="That code doesn't look right."};
 $('#tipsBtn').onclick=()=>{store.tips={};store.swapHint=false;save();SFX.click();toast('Tips will show again')};
+/* ---------------- online race (no accounts; nickname + random device id; first score per device stands) ---------------- */
+let raceCur=null; // {code,seed}
+const rcOk=c=>/^[a-z0-9]{6}$/.test(c||'');
+function raceDone(c){const d=store.raceDone;return !!d&&typeof d==='object'&&Number.isFinite(d[c])}
+const raceMine=c=>store.raceDone[c]
+function raceUrl(c){return 'https://blokaholic.app/?r='+c}
+async function raceSend(){const p=store.racePend;if(!p||!rcOk(p.code))return true;if(!navigator.onLine)return false;
+ try{await lbCall('submit_race',{p_code:p.code,p_nick:p.nick,p_device:lbDev(),p_score:Math.min(5000000,p.score|0)});delete store.racePend;save();return true}catch(e){if(/http 4/.test(e.message)){delete store.racePend;save();return true}return false}}
+addEventListener('online',()=>{raceSend().then(ok=>{if(ok&&raceCur&&$('#race').classList.contains('show'))raceRender()})});
+async function raceRender(){const c=raceCur.code,d=raceDone(c),list=$('#raList'),msg=$('#raMsg');
+ $('#raCode').textContent=c.toUpperCase();$('#raNick').value=store.nick||'';
+ $('#raNickRow').style.display=d?'none':'';$('#raGo').style.display=d||!raceCur.seed?'none':'';
+ msg.textContent=d?'Your score: '+fmt(raceMine(c))+(store.racePend&&store.racePend.code===c?' · will send when you\'re back online':''):'';
+ if(!navigator.onLine){list.innerHTML='';if(!(store.racePend&&store.racePend.code===c))msg.textContent+=(msg.textContent?' · ':'')+"You're offline. Scores show when you're back online.";return}
+ list.textContent='Loading…';await raceSend();
+ try{const rows=await lbCall('race_board',{p_code:c,p_device:lbDev()});if(!raceCur||raceCur.code!==c)return;
+  list.innerHTML='';if(!rows.length){list.textContent=d?'':'No scores yet. Invite a friend, then tap START!';return}
+  if(rows.length<2&&d){const w=document.createElement('div');w.className='fMsg';w.textContent='Waiting for your friend to play…';list.append(w)}
+  rows.forEach((r,i)=>{const e=document.createElement('div');e.className='dwRow'+(i===0&&rows.length>1?' win':'');const n=document.createElement('span');n.textContent=(i===0&&rows.length>1?'👑 ':(i+1)+'. ')+r.nickname+(r.me?' (you)':'');const v=document.createElement('span');v.textContent=fmt(r.score);e.append(n,v);list.append(e)})}
+ catch(e){list.innerHTML='';msg.textContent+=(msg.textContent?' · ':'')+"Can't reach race scores right now. Try Refresh."}}
+async function raceOpen(code){code=(code||'').trim().toLowerCase();if(!rcOk(code)){toast("That race code doesn't look right");return}
+ raceCur={code,seed:null};show('#race');$('#raList').innerHTML='';$('#raCode').textContent=code.toUpperCase();
+ if(raceDone(code)){raceRender();return}
+ $('#raGo').style.display='none';$('#raNickRow').style.display='';$('#raNick').value=store.nick||'';
+ if(!navigator.onLine){$('#raMsg').textContent="You're offline. Connect to the internet to join this race.";return}
+ $('#raMsg').textContent='Loading…';
+ try{const r=await lbCall('get_race',{p_code:code});if(!raceCur||raceCur.code!==code)return;if(!r||!Number.isFinite(r.seed)){$('#raMsg').textContent='This race has ended or the code is wrong (races last 7 days).';return}
+  raceCur.seed=r.seed;raceRender()}catch(e){$('#raMsg').textContent="Can't reach the race right now. Check your connection and try again."}}
+function raceNick(inp,msgEl){const n=inp.value.trim();if(!nickOk(n)){msgEl.textContent='Pick a nickname: 2–14 letters or numbers, and keep it friendly.';return null}store.nick=n;save();return n}
+$('#rNew').onclick=async()=>{SFX.click();const m=$('#rMsg');if(!raceNick($('#rNick'),m))return;
+ if(!navigator.onLine){m.textContent="You're offline. Races need the internet; pass & play works offline.";return}
+ m.textContent='Creating race…';try{const r=await lbCall('create_race',{p_device:lbDev()});m.textContent='';raceCur={code:r.code,seed:r.seed};show('#race');raceRender()}
+ catch(e){m.textContent="Couldn't create a race right now. Try again in a moment."}};
+$('#rJoin').onclick=()=>{SFX.click();const c=prompt('Enter the race code');if(c==null)return;if(!raceNick($('#rNick'),$('#rMsg')))return;raceOpen(c)};
+$('#raGo').onclick=()=>{SFX.click();if(!raceCur||!raceCur.seed)return;if(!raceNick($('#raNick'),$('#raMsg')))return;if(raceDone(raceCur.code)){raceRender();return}
+ if(!store.raceDone||typeof store.raceDone!=='object')store.raceDone={};store.raceDone[raceCur.code]=0;save(); // one go per race, even if the app is closed mid-race
+ startGame('classic',{seed:raceCur.seed,v:3,race:{code:raceCur.code}})};
+$('#raShare').onclick=async()=>{SFX.click();if(!raceCur)return;const u=raceUrl(raceCur.code),txt='Race me on Blokaholic! Same pieces, 2 minutes, highest score wins. Code '+raceCur.code.toUpperCase();
+ try{if(navigator.share){await navigator.share({title:'Blokaholic race',text:txt,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}
+ try{await navigator.clipboard.writeText(u);toast('Race link copied!')}catch(_){toast('Race code: '+raceCur.code.toUpperCase(),4000)}};
+$('#raRefresh').onclick=()=>{SFX.click();if(raceCur)raceRender()};
+$('#raBack').onclick=()=>{SFX.click();raceCur=null;goHomeNow()};
+function raceOver(){state='over';const c=race.code,sc=score|0;race=null;
+ if(!store.raceDone||typeof store.raceDone!=='object')store.raceDone={};store.raceDone[c]=sc;store.racePend={code:c,nick:(store.nick||'').trim(),score:sc};
+ const k=Object.keys(store.raceDone);if(k.length>40)delete store.raceDone[k[0]];save();
+ raceCur={code:c,seed:raceCur&&raceCur.code===c?raceCur.seed:null};show('#race');raceRender();try{SFX.best()}catch(_){}}
+if(store.nick)$('#rNick').value=store.nick;
+let pendingRace=null;try{const rq=new URLSearchParams(location.search).get('r');if(rq!==null){pendingRace=rq;try{history.replaceState(null,'',location.pathname)}catch(_){}}}catch(e){}
 let pendingFriends=false;try{const gq=new URLSearchParams(location.search).get('g');if(gq!==null){if(lbJoin(gq))pendingFriends=true;try{history.replaceState(null,'',location.pathname)}catch(_){}}}catch(e){}
 if(!store.sv3){store.sv3=1;if(store.best>0||store.bestSpeed>0){store.oldBest=store.best||0;store.oldSpeed=store.bestSpeed||0;store.best=0;store.bestSpeed=0;setTimeout(()=>toast('⚡ FASTER SCORING! Points now pile up much quicker.<br>Your old best ('+fmt(store.oldBest)+') is saved as a legacy score.',5000),900)}save()}
 document.body.classList.add('menu');setMute();layout();buildTitle();hideSvgs();requestAnimationFrame(frame);window.__booted=true;document.documentElement.classList.add('booted');
 if(pendingFriends)setTimeout(openFriends,300);
+if(pendingRace!==null)setTimeout(()=>raceOpen(pendingRace),300);else if(store.racePend)raceSend();
 /* ---------------- PWA: offline + install ---------------- */
 if('serviceWorker' in navigator&&(location.protocol==='https:'||/^(localhost|127\.0\.0\.1)$/.test(location.hostname)))
  addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
