@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FA+1eKNTnoflGyCyzG+DjDJlt2LNOsf7EdUGajk9NaQ='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-2SLZRQiiEyvis/Ls+A49ZVYE0M6N/Gr9CBbaNB7PXyc='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#7b5cd6">
 <meta name="mobile-web-app-capable" content="yes">
@@ -199,6 +199,7 @@ body.rm *,body.rm *::before,body.rm *::after{animation-duration:.001ms!important
 #pStreak{font-weight:900;font-size:15px;margin:2px 0 8px;color:#ffe08a;min-height:20px}#pStreak b{color:#fff}.psHint{font-size:12px;opacity:.75;color:#fff}.dsl{font-size:11px;font-weight:800;opacity:.8;text-transform:uppercase;letter-spacing:.3px;margin-right:2px}
 .saver{margin-left:6px;font-size:.9em}.saver.used{opacity:.3;filter:grayscale(1)}
 #friends .card{max-width:380px}#fNickRow{display:flex;gap:8px;margin:10px 0}#fNickRow .lbtn{flex:0 0 96px}#fNick{flex:1;min-width:0;font:inherit;font-weight:800;font-size:16px;padding:10px 12px;border-radius:12px;border:0;background:rgba(255,255,255,.9);color:#2a1450}.fMsg{font-size:13px;font-weight:800;opacity:.9;margin:6px 0;min-height:1em}.fRow{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.12);border-radius:12px;padding:8px 12px;margin:6px 0;font-weight:900;text-align:left}.fRow.me{background:rgba(255,214,10,.28)}.fRow .r{width:24px;opacity:.8}.fRow .n{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#fList{max-height:40vh;overflow:auto}
+#duo .card,#race .card,#raceEnd .card,#duoOver .card{max-height:100%;overflow:auto;scrollbar-width:none}.duoNames{display:flex;gap:8px;margin:10px 0}.duoNames input,#rNick{flex:1;min-width:0;font:inherit;font-weight:800;font-size:16px;padding:10px 12px;border-radius:12px;border:0;background:rgba(255,255,255,.9);color:#2a1450}.dSec{background:rgba(255,255,255,.1);border-radius:18px;padding:12px;margin-top:14px}.dSec .t1{font-size:19px;font-weight:900}#hWho{font-size:34px;font-weight:900;margin:8px 0}.dwRow{display:flex;justify-content:space-between;background:rgba(255,255,255,.14);border-radius:14px;padding:10px 14px;margin:8px 0;font-size:20px;font-weight:900}.dwRow.win{background:rgba(255,214,10,.32)}
 #mBtn b{background:#ffd60a;color:#5a3800;border-radius:10px;padding:1px 8px;font-size:13px}
 .mItem{background:rgba(255,255,255,.12);border-radius:16px;padding:10px 14px;margin:10px 0;text-align:left}.mItem .mT{font-weight:900;font-size:16px}.mItem .mP{font-size:13px;font-weight:800;opacity:.85;margin-top:4px}
 .mItem.done{background:rgba(93,255,138,.18)}.mItem.done .bar i{background:linear-gradient(90deg,#5dff8a,#2ec46b)}
@@ -243,6 +244,10 @@ body.rm *,body.rm *::before,body.rm *::after{animation-duration:.001ms!important
       <div class="ic" style="background:linear-gradient(#ffd60a,#ff8a00)"><svg viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg></div>
       <div><div class="t1">SPEED</div><div class="t2" id="sInfo"></div></div>
     </button>
+    <button class="subbtn" id="duoBtn">
+      <div class="ic" style="background:linear-gradient(#7dffb0,#1fb86a)">👥</div>
+      <div><div class="t1">2 PLAYERS</div><div class="t2" id="duoInfo">Pass &amp; play on one phone</div></div>
+    </button>
     <button class="subbtn" id="themesBtn">
       <div class="ic" style="background:linear-gradient(#5ee7ff,#7b61ff)"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A4.6 4.6 0 0 0 22 10.8C22 5.9 17.5 2 12 2zM6.5 12a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3-4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3 4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/></svg></div>
       <div style="flex:1"><div class="t1">THEMES <span id="tCount" style="opacity:.7;font-size:14px"></span></div><div class="bar xp" style="height:10px"><i id="tBar"></i></div></div>
@@ -269,6 +274,29 @@ body.rm *,body.rm *::before,body.rm *::after{animation-duration:.001ms!important
   <div class="row2"><button class="lbtn" id="fShare">Invite friends</button><button class="lbtn" id="fJoin">Join with code</button></div>
   <div id="fCode" class="fMsg"></div>
   <button class="bigbtn" id="fBack" style="height:58px;font-size:22px">DONE</button>
+</div></div>
+<div id="duo" class="overlay" inert aria-hidden="true"><div class="card">
+  <div style="font-size:26px;font-weight:900">👥 2 PLAYERS</div>
+  <div class="dSec"><div class="t1">PASS &amp; PLAY</div>
+  <div class="fMsg">One phone, one board. Take turns: place your 3 blocks, then pass the phone. Most points when the board fills up wins!</div>
+  <div class="duoNames"><input id="dN1" maxlength="12" placeholder="Player 1" autocomplete="off" aria-label="Player 1 name (optional)"><input id="dN2" maxlength="12" placeholder="Player 2" autocomplete="off" aria-label="Player 2 name (optional)"></div>
+  <button class="bigbtn" id="duoGo" style="height:62px;font-size:24px">PLAY</button></div>
+  <div id="raceSec"></div>
+  <button class="bigbtn" id="duoBack" style="height:54px;font-size:20px;margin-top:14px;background:rgba(255,255,255,.18);box-shadow:none">BACK</button>
+</div></div>
+<div id="hand" class="overlay" inert aria-hidden="true"><div class="card">
+  <div class="lbl" id="hTurnNo">TURN 1</div>
+  <div id="hWho">PLAYER 1</div>
+  <div id="hScores" class="fMsg" style="font-size:16px"></div>
+  <div class="fMsg">Pass the phone, then tap GO</div>
+  <button class="bigbtn" id="hGo">GO!</button>
+</div></div>
+<div id="duoOver" class="overlay" inert aria-hidden="true"><div class="card">
+  <div id="dwReason" class="fMsg"></div>
+  <div id="dwTitle" style="font-size:34px;font-weight:900">WINNER!</div>
+  <div id="dwList"></div>
+  <button class="bigbtn" id="dwAgain">REMATCH</button>
+  <button class="bigbtn" id="dwHome" style="height:54px;font-size:20px;margin-top:12px;background:rgba(255,255,255,.18);box-shadow:none">HOME</button>
 </div></div>
 <div id="quitP" role="dialog" aria-modal="true" aria-labelledby="qT"><div class="card">
   <div class="q1" id="qT">Leave game?</div>
@@ -466,7 +494,7 @@ function randPiece(r){let x=r()*TOTALW;for(const p of PIECES){x-=p.w;if(x<=0)ret
 /* ---------------- state ---------------- */
 let board=[],tray=[null,null,null],score=0,shown=0,combo=0,since=0,mode='classic',state='title',drng=Math.random,dailyTarget=0;
 let gameSeed=0,dealN=0,grng=Math.random,gift=null,nextGift=4,clearsN=0,mult2=0,perfects=0,newBestHit=false,challenge=null,chalWon=false,pendingChal=null;
-let V1=false,SV=3,replaying=false,tut=false,runLog=null,meterOver=0;// V1 = original generator/scoring (old challenge links)
+let duo=null,V1=false,SV=3,replaying=false,tut=false,runLog=null,meterOver=0;// V1 = original generator/scoring (old challenge links)
 const IDLE=45000,IDLE_WARN=10000;let idleT=IDLE,idleSec=99,idleSince=0;
 const STUCK_AUTO=2900,STUCK_PANEL=20000;let stuckShown=false,stuckLeft=0,stuckAt=0,stuckActive=false,stuckSoft=0;
 const FIT_DELAY=10000;let fitT=FIT_DELAY,fitKey='';
@@ -509,6 +537,7 @@ const pieceBy=(w,h,n)=>PIECES.find(p=>p.wd===w&&p.ht===h&&p.cells.length===n);
 // first-ever game: two scripted trays so the first line clear comes within a few moves
 const TUT=()=>[[{p:pieceBy(4,1,4),c:2},{p:pieceBy(2,2,4),c:5},{p:pieceBy(4,1,4),c:4}],[{p:pieceBy(3,1,3),c:1},{p:pieceBy(5,1,5),c:3},{p:pieceBy(2,2,3),c:0}]];
 function dealTray(){
+ if(duo&&dealN>0&&!replaying&&state==='play')duoSwitch();
  let ps=tut&&dealN<2?TUT()[dealN]:dealPieces(drng,dealN,mode,V1);dealN++;
  // Classic only (never Daily/challenges, which must stay identical for everyone): if nothing fits and no swap is banked, re-draw the biggest piece up to 3 times
  if(!V1&&mode==='classic'&&!challenge&&swaps===0)for(let k=0;k<3&&!ps.some(t=>anyFit(t.p));k++){let bi=0;ps.forEach((t,j)=>{if(t.p.cells.length>ps[bi].p.cells.length)bi=j});ps[bi]={p:randPiece(drng),c:ps[bi].c}}
@@ -1195,6 +1224,7 @@ function checkStuck(){
  stuck=false;updateSwapUI();endGame('space')}
 /* ---- speed ---- */
 function updateModeTag(){
+ if(duo){const o=duo.cur^1;$('#modeTag').textContent=duo.n[duo.cur].toUpperCase()+'\'S TURN · '+duo.n[o]+' '+fmt(duo.sc[o]);return}
  const hearts=()=>{let h='';for(let k=0;k<3;k++)h+=`<span class="heart ${k<strikes?'':'off'}">${IC.heart}</span>`;return h};
  if(challenge){$('#modeTag').innerHTML=IC.swords+' BEAT '+fmt(challenge.score)+(mode==='speed'?' '+hearts():'');return}
  if(mode==='daily')$('#modeTag').innerHTML='DAILY · '+IC.star+' '+fmt(dailyTarget);
@@ -1210,10 +1240,11 @@ function strike(){
 
 function startGame(m,opt={}){
  unlockAudio();mode=m;challenge=opt.challenge||null;tipQ=[];chalWon=false;{const h=$('#iosHint');if(h)h.classList.remove('show')}
+ duo=opt.duo?{n:opt.duo.n.slice(),sc:[0,0],cb:[[0,0],[0,0]],cur:0,turn:1}:null;
  V1=opt.v===1||!!(challenge&&challenge.v===1);
  SV=V1?1:(opt.v===2||opt.v===3)?opt.v:challenge&&challenge.v===2?2:(m==='daily'&&!challenge&&today()<V3DAY)?2:3;
  gameSeed=(opt.seed!=null?opt.seed:m==='daily'?dailySeed(today()):(Math.random()*4294967296))>>>0;
- tut=opt.tut!=null?!!opt.tut:(m==='classic'&&!challenge&&!opt.seed&&!store.games&&!V1);meterOver=0;
+ tut=opt.tut!=null?!!opt.tut:(m==='classic'&&!challenge&&!opt.seed&&!store.games&&!V1&&!duo);meterOver=0;
  drng=mulberry32(gameSeed);srng=mulberry32(gameSeed^0x9e3779b9);grng=mulberry32(gameSeed^0x51f7a3c1);
  dealN=0;gift=null;clearsN=0;nextGift=3+Math.floor(grng()*2);mult2=0;perfects=0;newBestHit=false;board=emptyBoard();score=0;shown=0;scoreEl.textContent='0';combo=0;since=0;celebrated=false;maxComboRun=0;linesRun=0;
  particles=[];fx=[];texts=[];drag=null;kb=null;ghost=null;
@@ -1231,7 +1262,8 @@ function startGame(m,opt={}){
  dealTray();
  state='play';hideAll();setMusicMode('play');setMusicLevel(0);musTargets();
   hint=null;if(!store.seenHint)showHint();
- runLog=m==='speed'?null:[];
+ runLog=m==='speed'||duo?null:[];
+ if(duo){celebrated=true;duoHand()}
  if(!opt.resume){store.games++;saveRun()}
  updateBest();
 }
@@ -1272,6 +1304,7 @@ function stars(s){if(!dailyTarget)return 0;return s>=dailyTarget*12?3:s>=dailyTa
 function starHtml(k){let h='';for(let i=0;i<3;i++)h+=`<span class="${i<k?'':'off'}">${IC.star}</span>`;return h}
 let streakSaved=false;
 function showOver(){streakSaved=false;if(placedN>=1&&endReason!=='quit')playDay();
+ if(duo){duoOver();return}
  state='over';
  const prev=bestNow();const isBest=score>prev&&score>0;wasBest=isBest;
  if(mode==='daily'&&!challenge){
@@ -1367,12 +1400,32 @@ $('#oHome').onclick=()=>{SFX.click();goHome()};
 $('#homeBtn').onclick=()=>{unlockAudio();SFX.click();goHome()};
 $('#qKeep').onclick=()=>{SFX.click();$('#quitP').classList.remove('show');document.body.classList.remove('menu');kick()};
 $('#qEnd').onclick=()=>{SFX.click();$('#quitP').classList.remove('show');document.body.classList.remove('menu');endGame('quit')};
+/* ---- 2 players: pass & play (shared board, alternate trays, own scores) ---- */
+function duoHand(){$('#hTurnNo').textContent='TURN '+duo.turn;$('#hWho').textContent=duo.n[duo.cur].toUpperCase()+"'S TURN";
+ const h=$('#hScores');h.textContent='';duo.n.forEach((n,i)=>{const sp=document.createElement('span');sp.textContent=(i?'  ·  ':'')+n+': ';const b=document.createElement('b');b.textContent=fmt(i===duo.cur?score:duo.sc[i]);h.append(sp,b)});
+ updateModeTag();show('#hand');try{SFX.unlock&&SFX.unlock()}catch(_){}}
+function duoSwitch(){duo.sc[duo.cur]=score;duo.cb[duo.cur]=[combo,since];duo.cur^=1;duo.turn++;
+ score=duo.sc[duo.cur];shown=score;scoreEl.textContent=fmt(score);[combo,since]=duo.cb[duo.cur];setMusicLevel(combo);updateBest();updateModeTag();
+ setTimeout(()=>{if(duo&&state==='play')duoHand()},450)}
+function duoOver(){state='over';duo.sc[duo.cur]=score;const [a,b]=duo.sc,w=a===b?-1:a>b?0:1;
+ $('#dwReason').textContent=endReason==='space'?'No space left':endReason==='quit'?'Game ended':'Out of time';
+ $('#dwTitle').textContent=w<0?"IT'S A DRAW!":duo.n[w].toUpperCase()+' WINS!';
+ const l=$('#dwList');l.textContent='';[0,1].sort((x,y)=>duo.sc[y]-duo.sc[x]).forEach(i=>{const d=document.createElement('div');d.className='dwRow'+(i===w?' win':'');const n=document.createElement('span');n.textContent=(i===w?'👑 ':'')+duo.n[i];const v=document.createElement('span');v.textContent=fmt(duo.sc[i]);d.append(n,v);l.append(d)});
+ show('#duoOver');confetti(110);try{SFX.best()}catch(_){}}
+function duoNames(){const c=v=>(v||'').trim().replace(/[^A-Za-z0-9 _.'-]/g,'').slice(0,12);return [c($('#dN1').value)||'Player 1',c($('#dN2').value)||'Player 2']}
+$('#duoBtn').onclick=()=>{SFX.click();show('#duo')};
+$('#duoBack').onclick=()=>{SFX.click();goHomeNow()};
+$('#duoGo').onclick=()=>{SFX.click();const n=duoNames();store.duoN=n;save();startGame('classic',{duo:{n}})};
+$('#hGo').onclick=()=>{SFX.click();hideAll();trayT=now;kick()};
+$('#dwAgain').onclick=()=>{SFX.click();const n=duo?[duo.n[1],duo.n[0]]:duoNames();startGame('classic',{duo:{n}})};
+$('#dwHome').onclick=()=>{SFX.click();duo=null;goHomeNow()};
+if(Array.isArray(store.duoN)){$('#dN1').value=store.duoN[0]==='Player 1'?'':String(store.duoN[0]||'').slice(0,12);$('#dN2').value=store.duoN[1]==='Player 2'?'':String(store.duoN[1]||'').slice(0,12)}
 function goHome(){
  if(state==='play'){const q=$('#quitP');if(q.classList.contains('show')){$('#qKeep').click();return}
   if(score>0){$('#qScore').textContent=fmt(score);q.classList.add('show');document.body.classList.add('menu');kick();return}
   runLog=null;delete store.run;save()}
  goHomeNow()}
-function goHomeNow(){mus.speed=false;setMusicTempo(118);armed=false;stuck=false;state='title';updateSwapUI();setMusicMode('calm');state='title';drag=null;kb=null;buildTitle();show('#title')}
+function goHomeNow(){duo=null;mus.speed=false;setMusicTempo(118);armed=false;stuck=false;state='title';updateSwapUI();setMusicMode('calm');state='title';drag=null;kb=null;buildTitle();show('#title')}
 $('#oShare').onclick=()=>openBrag();
 $('#oChallenge').onclick=()=>{SFX.click();shareChallenge()};
 $('#bBack').onclick=()=>{SFX.click();show('#over')};
@@ -1442,7 +1495,7 @@ if(DEV)window.BB={fx:()=>({loop:loopOn,lowFx,rm:RM,particles:particles.length,st
  slot:i=>slotCenter(i),
  swapPoint:()=>({x:L.swap.x+32,y:L.swap.y+32}),
  // test-only: build a stuck board (isolated diagonal holes, 3x3 pieces) with n swaps banked
- geo:()=>({W,H,iw:innerWidth,cw:document.documentElement.clientWidth,bx:L.bx,by:L.by,S:L.S,sx:scrollX}),dev:{noGift(){nextGift=1e9},link:()=>challengeLink(),today:()=>today(),gridKeep(rows){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=rows[y][x]==='1'?{c:(x+2*y)%7,t:-1e9}:null;tray[0]={p:PIECES.find(p=>p.cells.length===1),c:2,born:now}},grid(rows){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=rows[y][x]==='1'?{c:(x+2*y)%7,t:-1e9}:null;tray[0]={p:PIECES.find(p=>p.cells.length===1),c:2,born:now};combo=0;since=0;checkStuck()},sv:()=>SV,sc:()=>score,preview(){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=null;for(let x=1;x<N;x++)board[N-1][x]={c:x%7,t:-1e9};for(let y=0;y<N-1;y++)board[y][0]={c:(y+3)%7,t:-1e9};tray=[{p:PIECES.find(p=>p.cells.length===1),c:2,born:now-2000},tray[1],tray[2]];kb={i:0,gx:0,gy:N-1};kick()},stuck(n){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=(x===y||(y===0&&x<3))?null:{c:(x+y)%7,t:-1e9};tray=[0,1,2].map(()=>({p:PIECES.find(p=>p.cells.length===9),c:1,born:now}));swaps=n;meter=0;stuck=false;checkStuck()},
+ geo:()=>({W,H,iw:innerWidth,cw:document.documentElement.clientWidth,bx:L.bx,by:L.by,S:L.S,sx:scrollX}),dev:{noGift(){nextGift=1e9},duo:()=>duo&&{n:duo.n,sc:duo.sc.slice(),cur:duo.cur,turn:duo.turn,score},link:()=>challengeLink(),today:()=>today(),gridKeep(rows){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=rows[y][x]==='1'?{c:(x+2*y)%7,t:-1e9}:null;tray[0]={p:PIECES.find(p=>p.cells.length===1),c:2,born:now}},grid(rows){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=rows[y][x]==='1'?{c:(x+2*y)%7,t:-1e9}:null;tray[0]={p:PIECES.find(p=>p.cells.length===1),c:2,born:now};combo=0;since=0;checkStuck()},sv:()=>SV,sc:()=>score,preview(){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=null;for(let x=1;x<N;x++)board[N-1][x]={c:x%7,t:-1e9};for(let y=0;y<N-1;y++)board[y][0]={c:(y+3)%7,t:-1e9};tray=[{p:PIECES.find(p=>p.cells.length===1),c:2,born:now-2000},tray[1],tray[2]];kb={i:0,gx:0,gy:N-1};kick()},stuck(n){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=(x===y||(y===0&&x<3))?null:{c:(x+y)%7,t:-1e9};tray=[0,1,2].map(()=>({p:PIECES.find(p=>p.cells.length===9),c:1,born:now}));swaps=n;meter=0;stuck=false;checkStuck()},
   fill(v){addSwapMeter(v)},place(i,gx,gy){if(state==='play'&&tray[i]&&fits(tray[i].p,gx,gy)){place(i,gx,gy);return true}return false},swap(i){doSwap(i)},board:()=>board.map(r=>r.map(c=>c?c.c+1:0).join('')).join('/'),resumeLog:()=>store.run&&store.run.log.length,dealSizes(seed,n,md,v1){const r=mulberry32(seed);const out=[];for(let d=0;d<n;d++)out.push(dealPieces(r,d,md||'classic',!!v1).map(t=>t.p.cells.length));return out},comboMult:c=>comboMult(c),colour:arr=>colourLine(arr.map(c=>({c}))),gifts:()=>({clearsN,nextGift}),dailySeed:d=>dailySeed(d),dailyOk:sd=>dailyOk(sd),stars:s=>stars(s),target:()=>dailyTarget,speed:()=>({speedT:Math.round(speedT),speedMax:Math.round(speedMax),strikes}),idle(ms){idleT=ms;idleSec=99;idleSince=0},fitT(ms){fitT=ms},emptyTray(){tray=[null,null,null]},stuckSoft(ms){stuckSoft=ms},gift(t){openGift(t)},v1:()=>V1,mult2:()=>mult2},
  challengeLink:()=>challengeLink(),
  texts:()=>texts.map(t=>t.s),
