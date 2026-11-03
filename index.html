@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-ZPabGmE/GmG6VQVeqdXgzvHw+hBqOAkmM6WsJdVv+aM='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-JwPEZZXu9VFAUWFpTS3zN2UmEAPoKpeywB3s6gxE6Qo='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#7b5cd6">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1580,7 +1580,7 @@ async function raceRender(){const c=raceCur.code,d=raceDone(c),list=$('#raList')
  if(!navigator.onLine){list.innerHTML='';if(!(store.racePend&&store.racePend.code===c))msg.textContent+=(msg.textContent?' · ':'')+"You're offline. Scores show when you're back online.";return}
  list.textContent='Loading…';await raceSend();
  try{const rows=await lbCall('race_board',{p_code:c,p_device:lbDev()});if(!raceCur||raceCur.code!==c)return;
-  list.innerHTML='';if(!rows.length){list.textContent=d?'':'No scores yet. Invite a friend, then tap START!';return}
+  list.innerHTML='';if(d&&!store.racePend)msg.textContent='Your score: '+fmt(raceMine(c));if(!rows.length){list.textContent=d?'':'No scores yet. Invite a friend, then tap START!';return}
   if(rows.length<2&&d){const w=document.createElement('div');w.className='fMsg';w.textContent='Waiting for your friend to play…';list.append(w)}
   rows.forEach((r,i)=>{const e=document.createElement('div');e.className='dwRow'+(i===0&&rows.length>1?' win':'');const n=document.createElement('span');n.textContent=(i===0&&rows.length>1?'👑 ':(i+1)+'. ')+r.nickname+(r.me?' (you)':'');const v=document.createElement('span');v.textContent=fmt(r.score);e.append(n,v);list.append(e)})}
  catch(e){list.innerHTML='';msg.textContent+=(msg.textContent?' · ':'')+"Can't reach race scores right now. Try Refresh."}}
