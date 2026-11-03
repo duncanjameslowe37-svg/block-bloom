@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-fhb7x4ni9NVytFpYJKxjp/Rdw/lbiQUuxwwmN/Dyl1E='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FA+1eKNTnoflGyCyzG+DjDJlt2LNOsf7EdUGajk9NaQ='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#7b5cd6">
 <meta name="mobile-web-app-capable" content="yes">
@@ -54,6 +54,7 @@ body.menu #hud .scorebox,body.menu #homeBtn{visibility:hidden}
 #best svg{color:var(--accent)}
 #score{font-size:44px;font-weight:900;letter-spacing:.5px;margin-top:2px;display:inline-block;transition:transform .08s}
 #score.bump{transform:scale(1.18)}
+#score.bigbump{transform:scale(1.35);color:#ffd60a;text-shadow:0 0 18px rgba(255,214,10,.7)}
 #modeTag{font-size:11px;font-weight:900;letter-spacing:2px;opacity:.85;margin-top:3px;min-height:12px}
 .overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:5;padding:20px;
   background:rgba(26,12,52,.92);opacity:0;pointer-events:none;transition:opacity .25s}
@@ -389,7 +390,7 @@ const unlockedCount=()=>THEMES.filter((t,i)=>themeOpen(i)).length;
 if(!themeOpen(store.theme)){store.theme=0;TH=THEMES[0]}
 const SKINS=[['classic','CLASSIC'],['candy','CANDY'],['jewel','JEWEL'],['neon','NEON']];
 // block skins are milestone unlocks
-const SKIN_GOALS={candy:['Reach COMBO ×10',()=>maxComboRun>=10],jewel:['3-day Daily streak',()=>store.dailyStreak>=3&&store.dailyLast===today()],neon:['Score 10,000 in Classic',()=>mode==='classic'&&score>=10000]};
+const SKIN_GOALS={candy:['Reach COMBO ×10',()=>maxComboRun>=10],jewel:['3-day Daily streak',()=>store.dailyStreak>=3&&store.dailyLast===today()],neon:['Score 50,000 in Classic',()=>mode==='classic'&&score>=(SV===3?50000:10000)]};
 let SKIN=store.skins.includes(store.skin)?store.skin:'classic';
 
 /* ---------------- colour helpers ---------------- */
@@ -405,6 +406,7 @@ function hashStr(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math
 const pad=n=>String(n).padStart(2,'0');
 const dstr=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 const today=()=>dstr(new Date());
+const V3DAY='2026-11-04';// faster 'turbo' scoring; today's Daily keeps the old scoring so the friends board stays fair
 const yesterday=()=>{const d=new Date();d.setDate(d.getDate()-1);return dstr(d)};
 const dayBefore=(s,n)=>{const d=new Date(s+'T12:00:00');d.setDate(d.getDate()-n);return dstr(d)};
 const mondayOf=s=>{const d=new Date(s+'T12:00:00');d.setDate(d.getDate()-((d.getDay()+6)%7));return dstr(d)};
@@ -464,7 +466,7 @@ function randPiece(r){let x=r()*TOTALW;for(const p of PIECES){x-=p.w;if(x<=0)ret
 /* ---------------- state ---------------- */
 let board=[],tray=[null,null,null],score=0,shown=0,combo=0,since=0,mode='classic',state='title',drng=Math.random,dailyTarget=0;
 let gameSeed=0,dealN=0,grng=Math.random,gift=null,nextGift=4,clearsN=0,mult2=0,perfects=0,newBestHit=false,challenge=null,chalWon=false,pendingChal=null;
-let V1=false,replaying=false,tut=false,runLog=null,meterOver=0;// V1 = original generator/scoring (old challenge links)
+let V1=false,SV=3,replaying=false,tut=false,runLog=null,meterOver=0;// V1 = original generator/scoring (old challenge links)
 const IDLE=45000,IDLE_WARN=10000;let idleT=IDLE,idleSec=99,idleSince=0;
 const STUCK_AUTO=2900,STUCK_PANEL=20000;let stuckShown=false,stuckLeft=0,stuckAt=0,stuckActive=false,stuckSoft=0;
 const FIT_DELAY=10000;let fitT=FIT_DELAY,fitKey='';
@@ -898,7 +900,7 @@ function update(dt){
   if(idleT<=3000&&idleT>0){const q=Math.ceil(idleT/1000);if(q!==idleSec){idleSec=q;SFX.softTick()}}
   if(idleT<=0){idleT=0;endGame('idle')}}
  if(state==='play'&&!replaying&&tray.every(t=>!t)){try{dealTray()}catch(_){}if(tray.every(t=>!t))endGame('space')}
- if(shown!==score){const d=score-shown;shown+=Math.abs(d)<1?d:d*Math.min(1,dt*.012);if(Math.abs(score-shown)<.5)shown=score;scoreEl.textContent=fmt(shown)}
+ if(shown!==score){const d=score-shown;shown+=Math.abs(d)<1?d:d*Math.min(1,dt*.016)+Math.sign(d)*Math.min(Math.abs(d),dt*.6);if(Math.abs(score-shown)<.5)shown=score;scoreEl.textContent=fmt(Math.round(shown))}
 }
 function idlePaused(){return document.hidden||!!drag||!!kb||!!gift||!!document.querySelector('.overlay.show,#quitP.show')}
 function idleOn(){return mode!=='speed'&&state==='play'&&!stuck&&!idlePaused()}
@@ -954,7 +956,7 @@ function toast(html,ms=2200){const t=$('#toast');delete t.dataset.tip;t.innerHTM
 
 /* ---------------- game logic ---------------- */
 const scoreEl=$('#score');
-function bump(){scoreEl.classList.add('bump');setTimeout(()=>scoreEl.classList.remove('bump'),90)}
+function bump(big){scoreEl.classList.add(big?'bigbump':'bump');setTimeout(()=>scoreEl.classList.remove('bump','bigbump'),big?220:90)}
 function bestNow(){return mode==='daily'?(store.dailyDate===today()?store.dailyBest:0):mode==='speed'?(store.bestSpeed||0):store.best}
 
 function checkSkinGoals(){if(replaying)return;for(const k in SKIN_GOALS)if(!store.skins.includes(k)&&SKIN_GOALS[k][1]()){store.skins.push(k);save();const nm=SKINS.find(x=>x[0]===k)[1];setTimeout(()=>{toast(IC.gift+' NEW BLOCKS UNLOCKED: '+nm);SFX.unlock&&SFX.unlock()},900)}}
@@ -964,7 +966,7 @@ function nextTip(d){tipBusy=true;setTimeout(()=>{const q=tipQ.shift();if(!q||sta
 addEventListener('pointerdown',()=>{const t=$('#toast');if(t&&t.dataset.tip&&t.classList.contains('show')){t.classList.remove('show');delete t.dataset.tip}},{capture:true,passive:true});
 /* ---- daily missions: 3 a day, seeded by date (same for everyone), +20 XP each ---- */
 const MISSIONS=[{id:'multi',t:'Clear 2+ lines at once 3 times',n:3},{id:'combo',t:'Reach COMBO ×6',n:6},{id:'lines',t:'Clear 30 lines',n:30},{id:'colour',t:'Get a COLOUR bonus',n:1},
- {id:'classic',t:'Score 3,000 in one Classic game',n:3000},{id:'speed',t:'Score 1,500 in Speed',n:1500},{id:'daily',t:'Earn 2 stars on the Daily',n:2},{id:'swap',t:'Use 2 swaps',n:2},{id:'games',t:'Finish 3 games',n:3}];
+ {id:'classic',t:'Score 15,000 in one Classic game',n:15000},{id:'speed',t:'Score 7,500 in Speed',n:7500},{id:'daily',t:'Earn 2 stars on the Daily',n:2},{id:'swap',t:'Use 2 swaps',n:2},{id:'games',t:'Finish 3 games',n:3}];
 const MAXM={combo:1,classic:1,speed:1,daily:1};
 function todayMissions(){const r=mulberry32(hashStr('missions-'+today())),pool=MISSIONS.slice(),out=[];while(out.length<3)out.push(pool.splice(Math.floor(r()*pool.length),1)[0]);return out}
 function missionsReset(){const t=today();if(store.mDate!==t){store.mDate=t;store.mProg={};store.mDone=[]}}
@@ -975,9 +977,9 @@ function buildMissions(){missionsReset();$('#mList').innerHTML=todayMissions().m
  return `<div class="mItem ${d?'done':''}"><div class="mT">${d?'✓ ':''}${m.t}</div><div class="bar"><i style="width:${(d?1:p/m.n)*100}%"></i></div><div class="mP">${d?'+20 XP':fmt(p)+' / '+fmt(m.n)}</div></div>`}).join('')}
 function updateX2(){const e=$('#x2chip');if(!e)return;e.hidden=!(mult2>0&&state==='play');e.textContent='×2 SCORE · '+mult2+' LEFT'}
 /* ---- resume: the run is a seed plus a move log, replayed silently on Continue ---- */
-function saveRun(){if(runLog&&state==='play'&&!replaying)store.run={v:V1?1:2,seed:gameSeed,mode,date:mode==='daily'?today():'',tut:tut?1:0,chal:challenge?{seed:challenge.seed,mode:challenge.mode,score:challenge.score,v:challenge.v}:null,score,log:runLog};save()}
+function saveRun(){if(runLog&&state==='play'&&!replaying)store.run={v:SV,seed:gameSeed,mode,date:mode==='daily'?today():'',tut:tut?1:0,chal:challenge?{seed:challenge.seed,mode:challenge.mode,score:challenge.score,v:challenge.v}:null,score,log:runLog};save()}
 function resumable(){const r=store.run;if(!r||!r.log.length)return null;if(r.mode==='daily'&&r.date!==today())return null;return r}
-function resumeRun(){const r=resumable();if(!r)return;const log=r.log.slice(),mode0=r.mode,chal0=r.chal||null,seed0=r.seed,v0=r.v===1?1:0;
+function resumeRun(){const r=resumable();if(!r)return;const log=r.log.slice(),mode0=r.mode,chal0=r.chal||null,seed0=r.seed,v0=r.v===1?1:r.v===2?2:3;
  try{startGame(mode0,{seed:seed0,v:v0,tut:!!r.tut,challenge:chal0,resume:true});replaying=true;
   for(const e of log){if(state!=='play')throw new Error('ended');if(e[0]==='s'){if(swaps<=0||!tray[e[1]])throw new Error('bad swap');doSwap(e[1])}else{const [i,gx,gy]=e;if(!tray[i]||!fits(tray[i].p,gx,gy))throw new Error('bad move');place(i,gx,gy)}}
   replaying=false;
@@ -989,7 +991,9 @@ function resumeRun(){const r=resumable();if(!r)return;const log=r.log.slice(),mo
  catch(err){replaying=false;delete store.run;runLog=null;try{save()}catch(_){}
   try{startGame(mode0,{seed:chal0?seed0:undefined,v:v0,challenge:chal0||undefined});toast('Could not restore — starting fresh')}
   catch(_){goHomeNow();toast('Could not restore that game, sorry')}}}
-const comboMult=c=>V1?1+.5*(c-1):Math.min(3,1+.25*(c-1));
+const comboMult=c=>V1?1+.5*(c-1):SV===3?Math.min(5,1+.5*(c-1)):Math.min(3,1+.25*(c-1));
+const LINE3=[0,200,500,1000,1600,2400,3200,4000,5000];// v3 'turbo' scoring: big multi-line jumps
+const SCL=()=>SV===3?5:1;// v3 scores run ~5x the v2 scale
 // COLOUR line: all 8 cells one colour (v1), or at least 6 of 8 (v2)
 function colourLine(cells){if(V1)return cells.every(c=>c.c===cells[0].c);const k=new Array(7).fill(0);for(const c of cells)k[c.c]++;return Math.max(...k)>=6}
 function place(i,gx,gy){
@@ -999,7 +1003,7 @@ function place(i,gx,gy){
  tray[i]=null;ghost=null;idleReset();
  try{
  placedN++;if(placedN===3&&!replaying)playDay();if(F&&(!store.seenHint||hintAgain)){store.seenHint=true;hintAgain=false;hint=null}
- let pts=sh.cells.length;
+ let pts=sh.cells.length*(SV===3?10:1);
  if(F){try{SFX.place();buzz(8)}catch(_){}}
  const cxp=L.bx+(gx+sh.wd/2)*L.cell,cyp=L.by+(gy+sh.ht/2)*L.cell;
  const rows=[],cols=[];
@@ -1011,8 +1015,8 @@ function place(i,gx,gy){
   let chroma=0;
   rows.forEach(y=>{if(colourLine(board[y]))chroma++});
   cols.forEach(x=>{if(colourLine(board.map(r=>r[x])))chroma++});
-  const mult=comboMult(combo),capped=!V1&&combo>1&&mult>=3;
-  let gain=V1?Math.round((80*n*(n+1)/2+chroma*240)*mult):Math.round(80*n*(n+1)/2*mult)*(1+chroma); // v2: COLOUR really doubles (×3 for two colour lines)
+  const mult=comboMult(combo),cap=SV===3?5:3,capped=!V1&&combo>1&&mult>=cap;
+  let gain=SV===3?Math.round(LINE3[Math.min(n,8)]*mult)*(1+chroma):V1?Math.round((80*n*(n+1)/2+chroma*240)*mult):Math.round(80*n*(n+1)/2*mult)*(1+chroma); // v2: COLOUR really doubles (×3 for two colour lines)
   const set=new Map();
   rows.forEach(y=>{for(let x=0;x<N;x++)set.set(y*N+x,[x,y])});
   cols.forEach(x=>{for(let y=0;y<N;y++)set.set(y*N+x,[x,y])});
@@ -1025,7 +1029,7 @@ function place(i,gx,gy){
    board[y][x]=null}
   perfect=board.every(r=>r.every(c=>!c));
   const left=board.flat().filter(Boolean).length;
-  if(perfect){gain+=Math.round(1000*mult);perfects++;tip('perfect','Empty board = PERFECT clear, +1000!')}
+  if(perfect){gain+=Math.round((SV===3?5000:1000)*mult);perfects++;tip('perfect','Empty board = PERFECT clear, +'+(SV===3?'5,000':'1000')+'!')}
   if(mult2>0){gain*=2;mult2--}
   clearsN++;let gr=null;if(clearsN>=nextGift){nextGift=clearsN+(V1?5+Math.floor(grng()*3):12+Math.floor(grng()*6));gr=rollGift()}
   addSwapMeter((14*n+8*(combo-1)+(perfect?100:0))*(V1||placedN<30?1:.5)); // v2: half speed after the first 30 moves (keeps early deaths at the old level)
@@ -1035,14 +1039,14 @@ function place(i,gx,gy){
   shake=Math.min(4+n*4+combo*1.5,24);bgPulse=RM?.3:Math.min(1,.4+n*.2);
   flash=RM?0:Math.min(.14,.04*n+.015*combo);flashCol='#fff';
   SFX.clear(n,combo);buzz(15+n*10);
-  say('+'+fmt(gain),Math.max(L.cell*1.6,Math.min(W-L.cell*1.6,cxp)),cyp,L.cell*.62,'#fff');srSay(`Cleared ${n} line${n>1?'s':''}${combo>=2?', combo '+combo:''}${chroma?', colour bonus':''}${perfect?', perfect clear':''}. Plus ${gain}.`);
+  say('+'+fmt(gain),Math.max(L.cell*1.6,Math.min(W-L.cell*1.6,cxp)),cyp,L.cell*(SV===3?Math.min(1.05,.62+.1*Math.log2(1+gain/(200*SCL()))):.62),SV===3&&gain>=2000?'#ffd60a':'#fff',SV===3?{life:1250}:{});srSay(`Cleared ${n} line${n>1?'s':''}${combo>=2?', combo '+combo:''}${chroma?', colour bonus':''}${perfect?', perfect clear':''}. Plus ${gain}.`);
   const PRAISE=['','SWEET!','SWEET!','GREAT!','AMAZING!','UNSTOPPABLE!'];
   if(perfect){setTimeout(()=>{say('PERFECT!',L.bx+L.S/2,L.by+L.S/2,L.cell*.95,'#fff',{rainbow:1,life:1600});SFX.perfect();confetti(140)},250)}
   else if(n>=2)praise(PRAISE[Math.min(n,5)],Math.min(n,5)-2);
   else if(combo>=4&&combo%2===0)praise('SWEET!',0);
   if(!perfect&&!V1&&left<=4)setTimeout(()=>say('SO CLEAN!',L.bx+L.S/2,L.by+L.S*.32,L.cell*.55,'#bff7ff',{life:1100}),200);
   if(chroma)setTimeout(()=>say(chroma>1&&!V1?'COLOUR ×'+(1+chroma):'COLOUR ×2',L.bx+L.S/2,L.by+L.S*.58,L.cell*.55,'#fff',{rainbow:1}),150);
-  if(combo>=2)setTimeout(()=>say('COMBO ×'+combo+(capped?' · MAX ×3':''),cxp,cyp-L.cell*.8,L.cell*(capped?.42:.5),'#ffb020'),80);
+  if(combo>=2)setTimeout(()=>say('COMBO ×'+combo+(capped?' · MAX ×'+cap:''),cxp,cyp-L.cell*.8,L.cell*(capped?.42:.5),'#ffb020'),80);
   const xb=store.xp;store.xp+=n+(perfect?5:0);store.lines+=n;
   const th=THEMES.find((t,i)=>t.need>xb&&t.need<=store.xp&&!(store.giftThemes||[]).includes(i));if(th)setTimeout(()=>{toast(IC.gift+' NEW THEME: '+th.name);SFX.unlock()},600);
   if(combo===2)tip('combo','Clear lines back-to-back for a COMBO!');
@@ -1053,9 +1057,9 @@ function place(i,gx,gy){
   since++;if(combo>0&&since>=3){combo=0;if(F){SFX.lost();setMusicLevel(0)}}
   if(F)burst(cxp,cyp,col,4,.15);
  }
- if(mode==='speed'){speedFirst=false;speedGrace=false;pts+=Math.round(20*Math.max(0,speedT)/speedMax);speedMax=speedFor(score+pts);speedT=speedMax;lastTick=99;setMusicTempo(128+12*(1-(speedMax-3000)/5000))}
+ if(mode==='speed'){speedFirst=false;speedGrace=false;pts+=Math.round((SV===3?100:20)*Math.max(0,speedT)/speedMax);speedMax=speedFor((score+pts)/SCL());speedT=speedMax;lastTick=99;setMusicTempo(128+12*(1-(speedMax-3000)/5000))}
  score+=pts;
-  if(F){bump();
+  if(F){bump(SV===3&&pts>=1500);
   const b=bestNow();
   if(challenge&&!chalWon&&score>challenge.score){chalWon=true;setTimeout(()=>{say('YOU WIN!',L.bx+L.S/2,L.by+L.S*.22,L.cell*.85,'#5dff8a',{life:1700});SFX.best();confetti(80)},600)}
   if(!celebrated&&b>0&&score>b){celebrated=true;newBestHit=true;setTimeout(()=>{say('NEW BEST!',L.bx+L.S/2,L.by+L.S*.3,L.cell*.8,'#ffd60a',{life:1600});SFX.best();confetti(90)},400)}
@@ -1104,7 +1108,7 @@ function applyGift(){
 const LIVE='https://blokaholic.app/';
 const SITE=/^(localhost|127\.0\.0\.1)$/.test(location.hostname)?location.origin+location.pathname:LIVE;// share links always use the canonical domain
 const MODEL={classic:'CLASSIC',daily:'DAILY',speed:'SPEED'};
-function challengeLink(sc=score){return SITE+'?c='+gameSeed.toString(36)+'-'+mode[0]+'-'+Math.max(0,Math.round(sc)).toString(36)+(V1?'':'&v=2')}
+function challengeLink(sc=score){return SITE+'?c='+gameSeed.toString(36)+'-'+mode[0]+'-'+Math.max(0,Math.round(sc)).toString(36)+(V1?'':'&v='+SV)}
 function makeCard(){
  const W2=1080,H2=1350,c=document.createElement('canvas');c.width=W2;c.height=H2;const C=c.getContext('2d');
  const g=C.createLinearGradient(0,0,W2*.4,H2);g.addColorStop(0,TH.bg[0]);g.addColorStop(1,TH.bg[1]);C.fillStyle=g;C.fillRect(0,0,W2,H2);
@@ -1202,18 +1206,19 @@ function strike(){
   say('Place a piece before the bar runs out',L.bx+L.S/2,L.by+L.S*.56,L.cell*.34,'#ffffff',{life:2200,rise:0});return}
  strikes--;combo=0;since=0;setMusicLevel(0);shake=16;flash=RM?0:.12;flashCol='#ff2e4d';SFX.strike();buzz([40,30,40]);updateModeTag();
  say(strikes>0?'TIME!':'TIME UP',L.bx+L.S/2,L.by+L.S/2,L.cell*.9,'#ff6b85',{life:1000});
- if(strikes<=0){speedT=0;endGame('time')}else{speedMax=speedFor(score);speedT=speedMax;lastTick=99}}
+ if(strikes<=0){speedT=0;endGame('time')}else{speedMax=speedFor(score/SCL());speedT=speedMax;lastTick=99}}
 
 function startGame(m,opt={}){
  unlockAudio();mode=m;challenge=opt.challenge||null;tipQ=[];chalWon=false;{const h=$('#iosHint');if(h)h.classList.remove('show')}
  V1=opt.v===1||!!(challenge&&challenge.v===1);
+ SV=V1?1:(opt.v===2||opt.v===3)?opt.v:challenge&&challenge.v===2?2:(m==='daily'&&!challenge&&today()<V3DAY)?2:3;
  gameSeed=(opt.seed!=null?opt.seed:m==='daily'?dailySeed(today()):(Math.random()*4294967296))>>>0;
  tut=opt.tut!=null?!!opt.tut:(m==='classic'&&!challenge&&!opt.seed&&!store.games&&!V1);meterOver=0;
  drng=mulberry32(gameSeed);srng=mulberry32(gameSeed^0x9e3779b9);grng=mulberry32(gameSeed^0x51f7a3c1);
  dealN=0;gift=null;clearsN=0;nextGift=3+Math.floor(grng()*2);mult2=0;perfects=0;newBestHit=false;board=emptyBoard();score=0;shown=0;scoreEl.textContent='0';combo=0;since=0;celebrated=false;maxComboRun=0;linesRun=0;
  particles=[];fx=[];texts=[];drag=null;kb=null;ghost=null;
  if(m==='daily'){
-  {const k=Math.floor(drng()*11);dailyTarget=V1?1500+k*100:900+k*60}
+  {const k=Math.floor(drng()*11);dailyTarget=V1?1500+k*100:(900+k*60)*SCL()}
   // seeded symmetric "garden" pattern so each day looks distinct
   for(const [x,y,c] of garden(drng)){board[y][x]={c,t:-1e9};board[y][N-1-x]={c,t:-1e9}}
  }
@@ -1274,6 +1279,7 @@ function showOver(){streakSaved=false;if(placedN>=1&&endReason!=='quit')playDay(
   store.dailyBest=Math.max(store.dailyBest,score);
   if(store.dailyLast!==t){if(store.dailyLast===yesterday())store.dailyStreak++;else if(store.dailyLast===dayBefore(t,2)&&store.dailyStreak>0&&saverOk(yesterday())){const fresh=saverFree();store.dailyStreak++;useSaver(yesterday());streakSaved=true;if(fresh)setTimeout(()=>toast('Streak saved! ❄️',3000),900)}else store.dailyStreak=1;store.dailyLast=t}
  }else if(mode==='daily'){}
+ else if(SV!==3){}// older-scoring runs (old links / resumed) don't touch the new bests
  else if(mode==='speed')store.bestSpeed=Math.max(store.bestSpeed||0,score);
  else store.best=Math.max(store.best,score);
  store.bestCombo=Math.max(store.bestCombo,maxComboRun);save();
@@ -1315,7 +1321,7 @@ function buildTitle(){
  const db=store.dailyDate===t?store.dailyBest:0;
  const streak=store.dailyLast===t||store.dailyLast===yesterday()||(store.dailyLast===dayBefore(t,2)&&saverOk(yesterday()))?store.dailyStreak:0;
  {const ps=playStreakNow(),pe=$('#pStreak');pe.innerHTML=ps?`🔥 <b>${ps}-day streak</b>${saverHtml()}${store.play.last===t?'':' <span class="psHint">· play today to keep it</span>'}`:`🔥 Play today to start a streak${saverHtml()}`}
- const tgt=900+Math.floor(mulberry32(dailySeed(t))()*11)*60;dailyTarget=tgt;
+ const tgt=(900+Math.floor(mulberry32(dailySeed(t))()*11)*60)*(t<V3DAY?1:5);dailyTarget=tgt;
  const run=resumable();$('#contBtn').hidden=!run;if(run)$('#contTxt').textContent=`CONTINUE ${MODEL[run.mode]} · ${fmt(run.score||0)}`;
  const ms=todayMissions(),md=ms.filter(x=>store.mDone.includes(x.id)).length;$('#mCount').textContent=md+'/3';
  $('#dInfo').innerHTML=`<span class="dsl" title="Daily puzzle streak">Puzzle streak</span> ${streak}${saverHtml()} <span class="stars">${starHtml(stars(db))}</span>`;
@@ -1436,7 +1442,7 @@ if(DEV)window.BB={fx:()=>({loop:loopOn,lowFx,rm:RM,particles:particles.length,st
  slot:i=>slotCenter(i),
  swapPoint:()=>({x:L.swap.x+32,y:L.swap.y+32}),
  // test-only: build a stuck board (isolated diagonal holes, 3x3 pieces) with n swaps banked
- geo:()=>({W,H,iw:innerWidth,cw:document.documentElement.clientWidth,bx:L.bx,by:L.by,S:L.S,sx:scrollX}),dev:{preview(){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=null;for(let x=1;x<N;x++)board[N-1][x]={c:x%7,t:-1e9};for(let y=0;y<N-1;y++)board[y][0]={c:(y+3)%7,t:-1e9};tray=[{p:PIECES.find(p=>p.cells.length===1),c:2,born:now-2000},tray[1],tray[2]];kb={i:0,gx:0,gy:N-1};kick()},stuck(n){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=(x===y||(y===0&&x<3))?null:{c:(x+y)%7,t:-1e9};tray=[0,1,2].map(()=>({p:PIECES.find(p=>p.cells.length===9),c:1,born:now}));swaps=n;meter=0;stuck=false;checkStuck()},
+ geo:()=>({W,H,iw:innerWidth,cw:document.documentElement.clientWidth,bx:L.bx,by:L.by,S:L.S,sx:scrollX}),dev:{noGift(){nextGift=1e9},link:()=>challengeLink(),today:()=>today(),gridKeep(rows){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=rows[y][x]==='1'?{c:(x+2*y)%7,t:-1e9}:null;tray[0]={p:PIECES.find(p=>p.cells.length===1),c:2,born:now}},grid(rows){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=rows[y][x]==='1'?{c:(x+2*y)%7,t:-1e9}:null;tray[0]={p:PIECES.find(p=>p.cells.length===1),c:2,born:now};combo=0;since=0;checkStuck()},sv:()=>SV,sc:()=>score,preview(){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=null;for(let x=1;x<N;x++)board[N-1][x]={c:x%7,t:-1e9};for(let y=0;y<N-1;y++)board[y][0]={c:(y+3)%7,t:-1e9};tray=[{p:PIECES.find(p=>p.cells.length===1),c:2,born:now-2000},tray[1],tray[2]];kb={i:0,gx:0,gy:N-1};kick()},stuck(n){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=(x===y||(y===0&&x<3))?null:{c:(x+y)%7,t:-1e9};tray=[0,1,2].map(()=>({p:PIECES.find(p=>p.cells.length===9),c:1,born:now}));swaps=n;meter=0;stuck=false;checkStuck()},
   fill(v){addSwapMeter(v)},place(i,gx,gy){if(state==='play'&&tray[i]&&fits(tray[i].p,gx,gy)){place(i,gx,gy);return true}return false},swap(i){doSwap(i)},board:()=>board.map(r=>r.map(c=>c?c.c+1:0).join('')).join('/'),resumeLog:()=>store.run&&store.run.log.length,dealSizes(seed,n,md,v1){const r=mulberry32(seed);const out=[];for(let d=0;d<n;d++)out.push(dealPieces(r,d,md||'classic',!!v1).map(t=>t.p.cells.length));return out},comboMult:c=>comboMult(c),colour:arr=>colourLine(arr.map(c=>({c}))),gifts:()=>({clearsN,nextGift}),dailySeed:d=>dailySeed(d),dailyOk:sd=>dailyOk(sd),stars:s=>stars(s),target:()=>dailyTarget,speed:()=>({speedT:Math.round(speedT),speedMax:Math.round(speedMax),strikes}),idle(ms){idleT=ms;idleSec=99;idleSince=0},fitT(ms){fitT=ms},emptyTray(){tray=[null,null,null]},stuckSoft(ms){stuckSoft=ms},gift(t){openGift(t)},v1:()=>V1,mult2:()=>mult2},
  challengeLink:()=>challengeLink(),
  texts:()=>texts.map(t=>t.s),
@@ -1444,7 +1450,7 @@ if(DEV)window.BB={fx:()=>({loop:loopOn,lowFx,rm:RM,particles:particles.length,st
  music:()=>({on:mus.on,mode:mus.mode,level:mus.level,ctx:AC?AC.state:'none',layers:Object.fromEntries(LAYERS.map(k=>[k,mus.tgt[k]])),enabled:store.music,sfx:!store.muted,speed:mus.speed,bpm:Math.round(60/SPB/4)})};
 
 let badChal=false;
-try{const q=new URLSearchParams(location.search).get('c');if(q!==null){const mm=/^([0-9a-z]{1,7})-([cds])-([0-9a-z]{1,5})$/i.exec(q.trim());const sd=mm?parseInt(mm[1],36):NaN,sc=mm?parseInt(mm[3],36):NaN,m=mm&&{c:'classic',d:'daily',s:'speed'}[mm[2].toLowerCase()];if(!(m&&sd>=0&&sc>=0&&sd<=4294967295&&sc<=10000000))badChal=true;else{const vv=parseInt(new URLSearchParams(location.search).get('v')||'1',10);pendingChal={seed:sd>>>0,mode:m,score:sc,v:vv>=2?2:1}}}}catch(e){}
+try{const q=new URLSearchParams(location.search).get('c');if(q!==null){const mm=/^([0-9a-z]{1,7})-([cds])-([0-9a-z]{1,5})$/i.exec(q.trim());const sd=mm?parseInt(mm[1],36):NaN,sc=mm?parseInt(mm[3],36):NaN,m=mm&&{c:'classic',d:'daily',s:'speed'}[mm[2].toLowerCase()];if(!(m&&sd>=0&&sc>=0&&sd<=4294967295&&sc<=10000000))badChal=true;else{const vv=parseInt(new URLSearchParams(location.search).get('v')||'1',10);pendingChal={seed:sd>>>0,mode:m,score:sc,v:vv>=3?3:vv>=2?2:1}}}}catch(e){}
 /* ---------------- Daily friends board (no accounts; nickname + random device id) ---------------- */
 const LB_URL='https://rvrtryuwkvamvmrdszfu.supabase.co/rest/v1/rpc/',LB_KEY='sb_publishable_BqutMj-Ry4u0YRwDh7uc9w_dDS3mNUX';
 const LB_BAD=/(fuck|shit|cunt|bitch|nigg|fag|wank|twat|dick|cock|pussy|slut|whore|rape|nazi|hitler|bastard|piss|arse|asshole|retard|spastic|paki|kike|chink)/;
@@ -1460,7 +1466,7 @@ let lbBusy=false;
 async function lbSubmitAll(){
  const t=today();if(lbBusy||!nickOk(store.nick)||store.dailyDate!==t||!(store.dailyBest>0)||!lbGroups().length)return false;
  const key=t+':'+store.dailyBest+':'+store.nick+':'+store.groups.join(',');if(store.lbSent===key)return true;
- lbBusy=true;try{for(const g of store.groups)await lbCall('submit_daily',{p_group:g,p_nick:store.nick.trim(),p_device:lbDev(),p_day:t,p_score:Math.min(300000,store.dailyBest|0)});store.lbSent=key;save();return true}catch(e){return false}finally{lbBusy=false}}
+ lbBusy=true;try{for(const g of store.groups)await lbCall('submit_daily',{p_group:g,p_nick:store.nick.trim(),p_device:lbDev(),p_day:t,p_score:Math.min(5000000,store.dailyBest|0)});store.lbSent=key;save();return true}catch(e){return false}finally{lbBusy=false}}
 addEventListener('online',()=>{lbSubmitAll()});
 async function lbRender(){
  const g=lbCur(),list=$('#fList'),msg=$('#fMsg');
@@ -1486,6 +1492,7 @@ $('#fShare').onclick=async()=>{SFX.click();const u='https://blokaholic.app/?g='+
 $('#fJoin').onclick=()=>{SFX.click();const c=prompt('Enter a friends group code');if(c==null)return;if(lbJoin(c)){toast('Joined group!');lbRender()}else $('#fMsg').textContent="That code doesn't look right."};
 $('#tipsBtn').onclick=()=>{store.tips={};store.swapHint=false;save();SFX.click();toast('Tips will show again')};
 let pendingFriends=false;try{const gq=new URLSearchParams(location.search).get('g');if(gq!==null){if(lbJoin(gq))pendingFriends=true;try{history.replaceState(null,'',location.pathname)}catch(_){}}}catch(e){}
+if(!store.sv3){store.sv3=1;if(store.best>0||store.bestSpeed>0){store.oldBest=store.best||0;store.oldSpeed=store.bestSpeed||0;store.best=0;store.bestSpeed=0;setTimeout(()=>toast('⚡ FASTER SCORING! Points now pile up much quicker.<br>Your old best ('+fmt(store.oldBest)+') is saved as a legacy score.',5000),900)}save()}
 document.body.classList.add('menu');setMute();layout();buildTitle();hideSvgs();requestAnimationFrame(frame);window.__booted=true;document.documentElement.classList.add('booted');
 if(pendingFriends)setTimeout(openFriends,300);
 /* ---------------- PWA: offline + install ---------------- */
