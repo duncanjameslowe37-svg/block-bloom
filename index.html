@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-X/FRimMYXUhv7AocYWp475i6uAxnbcfRiXvbDawt1W8='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-NrPgIw6lm8++EYZiMO4QzUokKZ5kEOaOz8OzvEeSHx0='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#7b5cd6">
 <meta name="mobile-web-app-capable" content="yes">
@@ -550,15 +550,24 @@ function dealPieces(r,dn,md,v1){
 const pieceBy=(w,h,n)=>PIECES.find(p=>p.wd===w&&p.ht===h&&p.cells.length===n);
 // first-ever game: two scripted trays so the first line clear comes within a few moves
 const TUT=()=>[[{p:pieceBy(4,1,4),c:2},{p:pieceBy(2,2,4),c:5},{p:pieceBy(4,1,4),c:4}],[{p:pieceBy(3,1,3),c:1},{p:pieceBy(5,1,5),c:3},{p:pieceBy(2,2,3),c:0}]];
+function biggestTrayIdx(ps){let bi=0;ps.forEach((t,j)=>{if(t.p.cells.length>ps[bi].p.cells.length)bi=j});return bi}
+// Replace the biggest tray piece with one that fits. `r` advances that RNG; pass null to rescue
+// without touching shared race/daily/challenge streams so opponents stay on the same deal sequence.
+function forceTrayFit(ps,r){
+ if(ps.some(t=>anyFit(t.p)))return;
+ const pick=()=>{const fit=PIECES.filter(p=>anyFit(p));return fit.length?fit[Math.floor((r?r():Math.random())*fit.length)]:null};
+ if(r){for(let k=0;k<8&&!ps.some(t=>anyFit(t.p));k++){const bi=biggestTrayIdx(ps);ps[bi]={p:randPiece(r),c:ps[bi].c}}}
+ if(!ps.some(t=>anyFit(t.p))){const p=pick();if(p){const bi=biggestTrayIdx(ps);ps[bi]={p,c:ps[bi].c}}}
+}
 function dealTray(){
  if(duo&&dealN>0&&!replaying&&state==='play')duoSwitch();
  let ps=tut&&dealN<2?TUT()[dealN]:dealPieces(drng,dealN,mode,V1);dealN++;
- // Classic + pass & play: always try to deal at least one placeable piece when the board still has space.
- // Skip Daily/challenges/races so shared seeds stay identical for everyone. Banked swaps no longer skip this
- // (2-player used to keep the starter swap and get dead trays).
- if(!V1&&mode==='classic'&&!challenge&&!race){
-  for(let k=0;k<8&&!ps.some(t=>anyFit(t.p));k++){let bi=0;ps.forEach((t,j)=>{if(t.p.cells.length>ps[bi].p.cells.length)bi=j});ps[bi]={p:randPiece(drng),c:ps[bi].c}}
-  if(!ps.some(t=>anyFit(t.p))){const fit=PIECES.filter(p=>anyFit(p));if(fit.length){let bi=0;ps.forEach((t,j)=>{if(t.p.cells.length>ps[bi].p.cells.length)bi=j});ps[bi]={p:fit[Math.floor(drng()*fit.length)],c:ps[bi].c}}}
+ // Always try to deal at least one placeable piece when the board still has space.
+ // Solo classic may redraw from drng. Race/Daily/challenge keep the seeded deal stream intact
+ // and only do a local rescue (Math.random) so shared seeds stay fair between players.
+ if(!V1){
+  if(mode==='classic'&&!challenge&&!race)forceTrayFit(ps,drng);
+  else if(race||mode==='daily'||challenge)forceTrayFit(ps,null);
  }
  tray=ps.map(t=>({p:t.p,c:t.c,born:now}));
  trayT=now;
@@ -1229,12 +1238,14 @@ function doSwap(i){
  if(swaps<=0||!tray[i]||state!=='play')return;
  if(runLog&&!replaying)runLog.push(['s',i]);
  // Prefer pieces of 3+ cells (keeps early/mid game feeling chunky), but if only mono/domino
- // still fit on a tight board — especially late 2-player — allow those so a forced stop/swap
- // never hands the player an unplaceable piece while space remains.
+ // still fit on a tight board — race, late classic, 2-player — allow those so a forced
+ // stop/swap never hands the player an unplaceable piece while space remains.
  const old=tray[i].p,r=srng,prefer=p=>p!==old&&(V1||p.cells.length>=3);let np=null,first=null;
  for(let t=0;t<120;t++){const p=randPiece(r);if(p===old)continue;if(prefer(p)&&!first)first=p;if(prefer(p)&&anyFit(p)){np=p;break}}
  if(!np){const fit=PIECES.filter(p=>prefer(p)&&anyFit(p));if(fit.length)np=fit[Math.floor(r()*fit.length)]}
  if(!np){const fit=PIECES.filter(p=>p!==old&&anyFit(p));if(fit.length)np=fit[Math.floor(r()*fit.length)]}
+ // Last resort: any placeable shape including the same silhouette if that is all that fits
+ if(!np){const fit=PIECES.filter(p=>anyFit(p));if(fit.length)np=fit[Math.floor(r()*fit.length)]}
  np=np||first||randPiece(r);
  tray[i]={p:np,c:Math.floor(r()*7),born:now,swapT:now};
  swaps--;armed=false;if(kb&&kb.i===i)kb=null;idleReset();
@@ -1524,7 +1535,7 @@ if(DEV)window.BB={fx:()=>({loop:loopOn,lowFx,rm:RM,particles:particles.length,st
  slot:i=>slotCenter(i),
  swapPoint:()=>({x:L.swap.x+32,y:L.swap.y+32}),
  // test-only: build a stuck board (isolated diagonal holes, 3x3 pieces) with n swaps banked
- geo:()=>({W,H,iw:innerWidth,cw:document.documentElement.clientWidth,bx:L.bx,by:L.by,S:L.S,sx:scrollX}),dev:{noGift(){nextGift=1e9},race:()=>race&&{code:race.code,t:raceT,seed:gameSeed,score},raceEnd(){raceT=1},tray:()=>tray.map(t=>t&&t.p.cells.length+':'+t.c).join(','),duo:()=>duo&&{n:duo.n,sc:duo.sc.slice(),cur:duo.cur,turn:duo.turn,score},link:()=>challengeLink(),today:()=>today(),gridKeep(rows){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=rows[y][x]==='1'?{c:(x+2*y)%7,t:-1e9}:null;tray[0]={p:PIECES.find(p=>p.cells.length===1),c:2,born:now}},grid(rows){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=rows[y][x]==='1'?{c:(x+2*y)%7,t:-1e9}:null;tray[0]={p:PIECES.find(p=>p.cells.length===1),c:2,born:now};combo=0;since=0;checkStuck()},sv:()=>SV,sc:()=>score,preview(){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=null;for(let x=1;x<N;x++)board[N-1][x]={c:x%7,t:-1e9};for(let y=0;y<N-1;y++)board[y][0]={c:(y+3)%7,t:-1e9};tray=[{p:PIECES.find(p=>p.cells.length===1),c:2,born:now-2000},tray[1],tray[2]];kb={i:0,gx:0,gy:N-1};kick()},stuck(n){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=(x===y||(y===0&&x<3))?null:{c:(x+y)%7,t:-1e9};tray=[0,1,2].map(()=>({p:PIECES.find(p=>p.cells.length===9),c:1,born:now}));swaps=n;meter=0;stuck=false;checkStuck()},
+ geo:()=>({W,H,iw:innerWidth,cw:document.documentElement.clientWidth,bx:L.bx,by:L.by,S:L.S,sx:scrollX}),dev:{noGift(){nextGift=1e9},race:()=>race&&{code:race.code,t:raceT,seed:gameSeed,score},raceEnd(){raceT=1},startRace(seed){startGame('classic',{seed:seed>>>0,v:3,race:{code:'test'}})},tray:()=>tray.map(t=>t&&t.p.cells.length+':'+t.c).join(','),duo:()=>duo&&{n:duo.n,sc:duo.sc.slice(),cur:duo.cur,turn:duo.turn,score},link:()=>challengeLink(),today:()=>today(),gridKeep(rows){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=rows[y][x]==='1'?{c:(x+2*y)%7,t:-1e9}:null;tray[0]={p:PIECES.find(p=>p.cells.length===1),c:2,born:now}},grid(rows){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=rows[y][x]==='1'?{c:(x+2*y)%7,t:-1e9}:null;tray[0]={p:PIECES.find(p=>p.cells.length===1),c:2,born:now};combo=0;since=0;checkStuck()},sv:()=>SV,sc:()=>score,preview(){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=null;for(let x=1;x<N;x++)board[N-1][x]={c:x%7,t:-1e9};for(let y=0;y<N-1;y++)board[y][0]={c:(y+3)%7,t:-1e9};tray=[{p:PIECES.find(p=>p.cells.length===1),c:2,born:now-2000},tray[1],tray[2]];kb={i:0,gx:0,gy:N-1};kick()},stuck(n){for(let y=0;y<N;y++)for(let x=0;x<N;x++)board[y][x]=(x===y||(y===0&&x<3))?null:{c:(x+y)%7,t:-1e9};tray=[0,1,2].map(()=>({p:PIECES.find(p=>p.cells.length===9),c:1,born:now}));swaps=n;meter=0;stuck=false;checkStuck()},
   fill(v){addSwapMeter(v)},place(i,gx,gy){if(state==='play'&&tray[i]&&fits(tray[i].p,gx,gy)){place(i,gx,gy);return true}return false},swap(i){doSwap(i)},board:()=>board.map(r=>r.map(c=>c?c.c+1:0).join('')).join('/'),resumeLog:()=>store.run&&store.run.log.length,dealSizes(seed,n,md,v1){const r=mulberry32(seed);const out=[];for(let d=0;d<n;d++)out.push(dealPieces(r,d,md||'classic',!!v1).map(t=>t.p.cells.length));return out},comboMult:c=>comboMult(c),colour:arr=>colourLine(arr.map(c=>({c}))),gifts:()=>({clearsN,nextGift}),dailySeed:d=>dailySeed(d),dailyOk:sd=>dailyOk(sd),stars:s=>stars(s),target:()=>dailyTarget,speed:()=>({speedT:Math.round(speedT),speedMax:Math.round(speedMax),strikes}),idle(ms){idleT=ms;idleSec=99;idleSince=0},fitT(ms){fitT=ms},emptyTray(){tray=[null,null,null]},stuckSoft(ms){stuckSoft=ms},gift(t){openGift(t)},v1:()=>V1,mult2:()=>mult2},
  challengeLink:()=>challengeLink(),
  texts:()=>texts.map(t=>t.s),
