@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-JwPEZZXu9VFAUWFpTS3zN2UmEAPoKpeywB3s6gxE6Qo='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-X/FRimMYXUhv7AocYWp475i6uAxnbcfRiXvbDawt1W8='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#7b5cd6">
 <meta name="mobile-web-app-capable" content="yes">
@@ -553,8 +553,13 @@ const TUT=()=>[[{p:pieceBy(4,1,4),c:2},{p:pieceBy(2,2,4),c:5},{p:pieceBy(4,1,4),
 function dealTray(){
  if(duo&&dealN>0&&!replaying&&state==='play')duoSwitch();
  let ps=tut&&dealN<2?TUT()[dealN]:dealPieces(drng,dealN,mode,V1);dealN++;
- // Classic only (never Daily/challenges, which must stay identical for everyone): if nothing fits and no swap is banked, re-draw the biggest piece up to 3 times
- if(!V1&&mode==='classic'&&!challenge&&!race&&swaps===0)for(let k=0;k<3&&!ps.some(t=>anyFit(t.p));k++){let bi=0;ps.forEach((t,j)=>{if(t.p.cells.length>ps[bi].p.cells.length)bi=j});ps[bi]={p:randPiece(drng),c:ps[bi].c}}
+ // Classic + pass & play: always try to deal at least one placeable piece when the board still has space.
+ // Skip Daily/challenges/races so shared seeds stay identical for everyone. Banked swaps no longer skip this
+ // (2-player used to keep the starter swap and get dead trays).
+ if(!V1&&mode==='classic'&&!challenge&&!race){
+  for(let k=0;k<8&&!ps.some(t=>anyFit(t.p));k++){let bi=0;ps.forEach((t,j)=>{if(t.p.cells.length>ps[bi].p.cells.length)bi=j});ps[bi]={p:randPiece(drng),c:ps[bi].c}}
+  if(!ps.some(t=>anyFit(t.p))){const fit=PIECES.filter(p=>anyFit(p));if(fit.length){let bi=0;ps.forEach((t,j)=>{if(t.p.cells.length>ps[bi].p.cells.length)bi=j});ps[bi]={p:fit[Math.floor(drng()*fit.length)],c:ps[bi].c}}}
+ }
  tray=ps.map(t=>({p:t.p,c:t.c,born:now}));
  trayT=now;
 }
@@ -943,7 +948,7 @@ function update(dt){
   if(idleT<=IDLE_WARN&&!idleSince)idleSince=now;
   if(idleT<=3000&&idleT>0){const q=Math.ceil(idleT/1000);if(q!==idleSec){idleSec=q;SFX.softTick()}}
   if(idleT<=0){idleT=0;endGame('idle')}}
- if(state==='play'&&!replaying&&tray.every(t=>!t)){try{dealTray()}catch(_){}if(tray.every(t=>!t))endGame('space')}
+ if(state==='play'&&!replaying&&tray.every(t=>!t)){try{dealTray()}catch(_){}if(tray.every(t=>!t))endGame('space');else checkStuck()}
  if(shown!==score){const d=score-shown;shown+=Math.abs(d)<1?d:d*Math.min(1,dt*.016)+Math.sign(d)*Math.min(Math.abs(d),dt*.6);if(Math.abs(score-shown)<.5)shown=score;scoreEl.textContent=fmt(Math.round(shown))}
 }
 function idlePaused(){return document.hidden||!!drag||!!kb||!!gift||!!document.querySelector('.overlay.show,#quitP.show')}
@@ -1223,9 +1228,13 @@ function addSwapMeter(v){
 function doSwap(i){
  if(swaps<=0||!tray[i]||state!=='play')return;
  if(runLog&&!replaying)runLog.push(['s',i]);
- const old=tray[i].p,r=srng,ok=p=>V1||p.cells.length>=3;let np=null,first=null;
- for(let t=0;t<120;t++){const p=randPiece(r);if(p===old||!ok(p))continue;if(!first)first=p;if(anyFit(p)){np=p;break}}
- if(!np){const fit=PIECES.filter(p=>p!==old&&ok(p)&&anyFit(p));if(fit.length)np=fit[Math.floor(r()*fit.length)]}
+ // Prefer pieces of 3+ cells (keeps early/mid game feeling chunky), but if only mono/domino
+ // still fit on a tight board — especially late 2-player — allow those so a forced stop/swap
+ // never hands the player an unplaceable piece while space remains.
+ const old=tray[i].p,r=srng,prefer=p=>p!==old&&(V1||p.cells.length>=3);let np=null,first=null;
+ for(let t=0;t<120;t++){const p=randPiece(r);if(p===old)continue;if(prefer(p)&&!first)first=p;if(prefer(p)&&anyFit(p)){np=p;break}}
+ if(!np){const fit=PIECES.filter(p=>prefer(p)&&anyFit(p));if(fit.length)np=fit[Math.floor(r()*fit.length)]}
+ if(!np){const fit=PIECES.filter(p=>p!==old&&anyFit(p));if(fit.length)np=fit[Math.floor(r()*fit.length)]}
  np=np||first||randPiece(r);
  tray[i]={p:np,c:Math.floor(r()*7),born:now,swapT:now};
  swaps--;armed=false;if(kb&&kb.i===i)kb=null;idleReset();
