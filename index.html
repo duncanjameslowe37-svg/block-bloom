@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-3Z/nyNcBCipcU/Fsvy3tOBnQwgk5cc2PvTcKKXf0gzY='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-aq0vC70ji/D53UnsflzsZ/exl6Xl31VDQecDnVkpdo0='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#7b5cd6">
 <meta name="mobile-web-app-capable" content="yes">
@@ -208,11 +208,20 @@ body.duo #best,body.duo #x2chip{display:none!important}body.gifting #x2chip{visi
 #x2chip{font-size:11px;font-weight:900;letter-spacing:1px;color:#5a3800;background:#7bf5ff;border-radius:9px;padding:1px 8px;margin-top:3px;display:inline-block}#x2chip[hidden]{display:none}
 #swapBtn.full b::after{content:' MAX';font-size:10px}
 .skin .lk{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:rgba(0,0,0,.45);border-radius:16px;font-size:10px;line-height:1.15;padding:4px;text-align:center}.skin .lk svg{font-size:18px}
+
+#themesBtn{border:1px solid #a6f4ff;background:linear-gradient(110deg,rgba(38,181,211,.28),rgba(123,97,255,.3));margin:0 0 6px;min-height:68px}
+#themesBtn .t1{font-size:15px}#themesBtn .bar{margin-top:5px;height:5px!important}#nextUnlock{font-size:11px;line-height:1.4;margin-top:3px}.newBadge{font-size:9px;background:#ffe08a;color:#292044;border-radius:6px;padding:3px;vertical-align:middle}
+#themeTip{font-size:11px;line-height:1.35;opacity:.9;margin:0 0 9px;text-align:center}
+#rewardNotice{position:fixed;z-index:100;left:50%;transform:translateX(-50%);bottom:max(12px,env(safe-area-inset-bottom));width:min(340px,calc(100% - 24px));padding:15px;border:1px solid #ffe08a;border-radius:18px;background:#24193f;box-shadow:0 6px 30px #0008;text-align:center;font-weight:900}#rewardNotice[hidden]{display:none}#rewardNotice button{margin:10px 4px 0;padding:9px 18px;border-radius:10px;background:#ffe08a;color:#24193f;font-weight:900}#rewardLater{background:#ffffff22!important;color:white!important}
+
+.rewardHelp{font-size:12px;line-height:1.5;margin:4px 0 14px;opacity:.85}#themes h3{font-size:14px;margin:10px 0 0;letter-spacing:1px}#tBack{position:sticky;bottom:0}
+@media(max-height:850px){#title .logo .tile{height:38px;width:35px;font-size:24px}#title .tagline{font-size:13px;margin-bottom:9px}#title .subbtn{margin-top:10px;padding:9px 12px}#title .subbtn .ic{width:42px;height:42px}#title .bigbtn{height:62px}#title #themesBtn{margin-top:0;min-height:64px}#title #mBtn,#title #fBtn{margin-top:10px}#title .homeFoot{margin-top:7px;flex-wrap:wrap;gap:0}#title .homeFoot a,#title .homeFoot button{font-size:11px!important;min-height:32px}}
 </style>
 </head>
 <body>
 <canvas id="c" role="img" aria-label="Blokaholic game board. Drag pieces from the tray onto the 8 by 8 board to fill rows and columns. Keyboard: 1 to 3 picks a piece, arrow keys move it, Enter places it, S swaps."></canvas>
 <div id="giftToast" aria-hidden="true"></div>
+<div id="rewardNotice" role="status" hidden><div id="rewardText"></div><button id="rewardTry">TRY IT</button><button id="rewardLater" aria-label="Dismiss reward">LATER</button></div>
 <div id="live" class="sr" aria-live="polite" aria-atomic="true"></div>
 
 <div id="hud">
@@ -231,6 +240,11 @@ body.duo #best,body.duo #x2chip{display:none!important}body.gifting #x2chip{visi
     <div class="logo" id="logo"><div class="row"><div class="tile" style="background:#ff4d6d;animation-delay:0s">B</div><div class="tile" style="background:#ff9f1c;animation-delay:0.09s">L</div><div class="tile" style="background:#ffd60a;animation-delay:0.18s">O</div><div class="tile" style="background:#3ddc6a;animation-delay:0.27s">K</div></div><div class="row"><div class="tile" style="background:#3ddc6a;animation-delay:0.44999999999999996s">A</div><div class="tile" style="background:#2ec4ff;animation-delay:0.54s">H</div><div class="tile" style="background:#7b61ff;animation-delay:0.63s">O</div><div class="tile" style="background:#ff5fc8;animation-delay:0.72s">L</div><div class="tile" style="background:#ff4d6d;animation-delay:0.8099999999999999s">I</div><div class="tile" style="background:#ff9f1c;animation-delay:0.8999999999999999s">C</div></div></div>
     <div class="tagline">The block puzzle with zero ads. Just play.</div>
     <div id="pStreak" aria-live="polite">🔥 Play today to start a streak</div>
+    <button class="subbtn" id="themesBtn">
+      <div class="ic" style="background:linear-gradient(#5ee7ff,#7b61ff)"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A4.6 4.6 0 0 0 22 10.8C22 5.9 17.5 2 12 2zM6.5 12a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3-4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3 4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/></svg></div>
+      <div style="flex:1"><div class="t1">COLOURS &amp; BLOCKS <span id="themeNew" class="newBadge">NEW</span> <span id="tCount" style="opacity:.7;font-size:14px"></span></div><div class="t2" id="nextUnlock"></div><div class="bar xp" style="height:10px"><i id="tBar"></i></div></div>
+    </button>
+    <div id="themeTip">Make it yours: tap above to change colours &amp; blocks.<br>Play each day for permanent streak rewards!</div>
     <div id="chalCard" style="display:none">
       <div class="chTitle"><svg viewBox="0 0 24 24"><path d="M3 2h3l9 9-3 3-9-9zm18 0v3l-9 9-3-3 9-9zM5 15l4 4-2 2-1-1-2 2-2-2 2-2-1-1zm14 0 2 2-1 1 2 2-2 2-2-2-1 1-2-2z"/></svg> <span id="chalTitle">YOU'VE BEEN CHALLENGED!</span></div>
       <div class="chText" id="chalInfo"></div>
@@ -251,10 +265,7 @@ body.duo #best,body.duo #x2chip{display:none!important}body.gifting #x2chip{visi
       <div class="ic" style="background:linear-gradient(#7dffb0,#1fb86a)">👥</div>
       <div><div class="t1">2 PLAYERS</div><div class="t2" id="duoInfo">Pass &amp; play on one phone</div></div>
     </button>
-    <button class="subbtn" id="themesBtn">
-      <div class="ic" style="background:linear-gradient(#5ee7ff,#7b61ff)"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A4.6 4.6 0 0 0 22 10.8C22 5.9 17.5 2 12 2zM6.5 12a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3-4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3 4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/></svg></div>
-      <div style="flex:1"><div class="t1">THEMES <span id="tCount" style="opacity:.7;font-size:14px"></span></div><div class="bar xp" style="height:10px"><i id="tBar"></i></div></div>
-    </button>
+
     <button id="mBtn">🎯 DAILY MISSIONS <b id="mCount">0/3</b></button>
     <button id="fBtn">🏆 FRIENDS · TODAY'S SCORES</button>
     <div class="homeFoot"><button class="pvlink" id="installBtn" hidden><svg viewBox="0 0 24 24"><path d="M11 3h2v9.2l3.3-3.3 1.4 1.4L12 16l-5.7-5.7 1.4-1.4 3.3 3.3zM5 18h14v2H5z"/></svg> Install app</button><button class="pvlink" id="rmBtn" aria-pressed="false">Reduce motion: Off</button><button class="pvlink" id="tipsBtn">Show tips again</button><a class="pvlink" href="privacy.html">Privacy</a><a class="pvlink" href="terms.html">Terms</a></div>
@@ -353,10 +364,12 @@ body.duo #best,body.duo #x2chip{display:none!important}body.gifting #x2chip{visi
 
 <div id="themes" class="overlay" inert aria-hidden="true">
   <div class="card">
-    <h2>THEMES</h2>
-    <div class="tgrid" id="tGrid"></div>
-    <h2 style="margin-top:18px">BLOCKS</h2>
+    <h2>COLOURS &amp; BLOCKS</h2>
+    <p class="rewardHelp">Play any mode daily. Streak rewards stay yours forever.</p>
+    <h3>BLOCKS</h3>
     <div class="skgrid" id="kGrid"></div>
+    <h3 style="margin-top:18px">COLOUR THEMES</h3>
+    <div class="tgrid" id="tGrid"></div>
     <button class="bigbtn" id="tBack" aria-label="Done" style="margin-top:18px;height:60px;font-size:24px;animation:none"><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></button>
   </div>
 </div>
@@ -429,18 +442,25 @@ const THEMES=[
  {name:'SUNSET',need:200,bg:['#ffb36b','#a43c8f'],board:'rgba(60,10,50,.35)',slot:'rgba(255,255,255,.10)',cols:['#ff3d5a','#ff8c1a','#ffe14d','#51e08a','#36b9ff','#9a6bff','#ff7ad9']},
  {name:'FOREST',need:450,bg:['#b4ec7a','#1f6b45'],board:'rgba(10,40,20,.35)',slot:'rgba(255,255,255,.10)',cols:['#ff5c5c','#ffa53d','#fff06b','#48e07a','#4dd2ff','#a77bff','#ff8fd8']},
  {name:'NEON',need:900,bg:['#1b1240','#05030f'],board:'rgba(255,255,255,.04)',slot:'rgba(255,255,255,.06)',glow:1,cols:['#ff2e88','#ff9500','#f9f871','#00ff9f','#00e0ff','#8f5bff','#ff4dff']},
- {name:'GALAXY',need:1600,bg:['#3a1670','#070214'],board:'rgba(255,255,255,.05)',slot:'rgba(255,255,255,.07)',stars:1,glow:1,cols:['#ff5e7e','#ffb347','#fff27a','#5effb0','#64d8ff','#b38cff','#ff8ae2']}
+ {name:'GALAXY',need:1600,bg:['#3a1670','#070214'],board:'rgba(255,255,255,.05)',slot:'rgba(255,255,255,.07)',stars:1,glow:1,cols:['#ff5e7e','#ffb347','#fff27a','#5effb0','#64d8ff','#b38cff','#ff8ae2']},
+ {name:'AURORA',need:Infinity,days:10,bg:["#174d60", "#151030"],board:'rgba(10,12,35,.4)',slot:'rgba(255,255,255,.1)',cols:["#ff7baf", "#ffbb70", "#fff5a8", "#77f7be", "#66dcff", "#ba9cff", "#f5a4ef"]},
+ {name:'ROSE QUARTZ',need:Infinity,days:30,bg:["#bc6386", "#43253e"],board:'rgba(10,12,35,.4)',slot:'rgba(255,255,255,.1)',cols:["#f6c6d9", "#ff819d", "#ffd2a1", "#c2e8cd", "#b9dcef", "#bfa8f4", "#ef9dde"]},
+ {name:'SOLAR FLARE',need:Infinity,days:50,bg:["#a34013", "#25102d"],board:'rgba(10,12,35,.4)',slot:'rgba(255,255,255,.1)',cols:["#ff553d", "#ff992e", "#ffe66a", "#b9eb75", "#77d6e5", "#c49aff", "#ff87b6"]},
+ {name:'MOONLIGHT',need:Infinity,days:70,bg:["#293b66", "#090e20"],board:'rgba(10,12,35,.4)',slot:'rgba(255,255,255,.1)',cols:["#a9bfff", "#d3b6ff", "#fff1bf", "#a7e7d8", "#83d4f5", "#e6c8f0", "#f5adc7"]},
+ {name:'PRISM',need:Infinity,days:90,bg:["#3b277d", "#112b4b"],board:'rgba(10,12,35,.4)',slot:'rgba(255,255,255,.1)',cols:["#ff72a9", "#ffa864", "#ffe968", "#78efbc", "#65e5ff", "#ad8aff", "#f09dff"]}
 ];
 if(!Number.isInteger(store.theme)||store.theme<0||store.theme>=THEMES.length)store.theme=0;
 // themes already earned under the old, faster XP curve stay unlocked
 if(!store.mig2){[0,30,80,160,300,500].forEach((n,i)=>{if(i&&store.xp>=n&&!store.giftThemes.includes(i))store.giftThemes.push(i)});store.mig2=1}
 let TH=THEMES[store.theme];
-function themeOpen(i){return store.xp>=THEMES[i].need||(store.giftThemes||[]).includes(i)}
+function themeOpen(i){return THEMES[i].days?(store.streakRewards||[]).includes('theme:'+i):store.xp>=THEMES[i].need||(store.giftThemes||[]).includes(i)}
 const unlockedCount=()=>THEMES.filter((t,i)=>themeOpen(i)).length;
 if(!themeOpen(store.theme)){store.theme=0;TH=THEMES[0]}
-const SKINS=[['classic','CLASSIC'],['candy','CANDY'],['jewel','JEWEL'],['neon','NEON']];
+const SKINS=[['classic','CLASSIC'],['candy','CANDY'],['jewel','JEWEL'],['neon','NEON'],['porcelain','PORCELAIN'],['circuit','CIRCUIT'],['bubble','BUBBLE'],['woven','WOVEN'],['crown','CROWN']];
 // block skins are milestone unlocks
-const SKIN_GOALS={candy:['Reach COMBO ×10',()=>maxComboRun>=10],jewel:['3-day Daily streak',()=>store.dailyStreak>=3&&store.dailyLast===today()],neon:['Score 50,000 in Classic',()=>mode==='classic'&&score>=(SV===3?50000:10000)]};
+const SKIN_DAYS={porcelain:20,circuit:40,bubble:60,woven:80,crown:100};
+const SKIN_GOALS={candy:['Reach COMBO ×10',()=>maxComboRun>=10],jewel:['3-day streak',()=>earnedStreak()>=3],neon:['Score 50,000 in Classic',()=>mode==='classic'&&score>=(SV===3?50000:10000)]};
+for(const [k,d] of Object.entries(SKIN_DAYS))SKIN_GOALS[k]=[d+'-day streak',()=>earnedStreak()>=d];
 let SKIN=store.skins.includes(store.skin)?store.skin:'classic';
 
 /* ---------------- colour helpers ---------------- */
@@ -468,6 +488,29 @@ if(!store.play||typeof store.play!=="object"){const ok=store.dailyLast===today()
 /* General PLAY streak: any mode, a day counts after 3 placed moves (or a finished game with ≥1 move). Local dates. */
 const PLAY_MS=[[3,'3-day'],[7,'7-day'],[14,'14-day'],[30,'30-day']];
 function playStreakNow(){const p=store.play,t=today();if(!p||!p.last)return 0;if(p.last===t||p.last===yesterday()||p.last>t)return p.streak;if(p.last===dayBefore(t,2)&&saverOk(yesterday()))return p.streak;return 0}
+
+// A historical streak remains evidence of an earned reward after missed days.
+const streakNumber=v=>Number.isFinite(Number(v))?Math.max(0,Math.min(100000,Math.floor(Number(v)))):0;
+function earnedStreak(){return Math.max(streakNumber(store.streakBest),streakNumber(store.play.streak),streakNumber(store.play.best),streakNumber(store.dailyStreak),streakNumber(store.dailyBestStreak),streakNumber(store.longestStreak))}
+const STREAK_REWARDS=[{id:'skin:jewel',days:3,name:'Jewel',skin:'jewel'},...THEMES.flatMap((t,i)=>t.days?[{id:'theme:'+i,days:t.days,name:t.name,theme:i}]:[]),...Object.entries(SKIN_DAYS).map(([skin,days])=>({id:'skin:'+skin,days,name:SKINS.find(k=>k[0]===skin)[1],skin}))].sort((a,b)=>a.days-b.days);
+let rewardQueue=[],activeReward=null;
+function syncStreakRewards(){
+ const best=earnedStreak();store.streakBest=best;
+ if(!Array.isArray(store.streakRewards))store.streakRewards=[];
+ for(const r of STREAK_REWARDS){if(best<r.days||store.streakRewards.includes(r.id))continue;
+  store.streakRewards.push(r.id);if(r.skin&&!store.skins.includes(r.skin))store.skins.push(r.skin);
+  rewardQueue.push(r);
+ }
+ save();offerReward();
+}
+function offerReward(){if(!$('#title').classList.contains('show')||(!activeReward&&!rewardQueue.length))return;
+ if(!activeReward)activeReward=rewardQueue.shift();$('#rewardText').textContent=(activeReward.skin?'New blocks unlocked! ':'New theme unlocked! ')+activeReward.name;
+ $('#rewardNotice').hidden=false;
+}
+function closeReward(){activeReward=null;$('#rewardNotice').hidden=true;offerReward()}
+$('#rewardLater').onclick=closeReward;
+$('#rewardTry').onclick=()=>{const r=activeReward;if(!r)return;if(r.skin)SKIN=store.skin=r.skin;else{store.theme=r.theme;TH=THEMES[r.theme];makeBokeh()}save();closeReward();openThemes('#title')};
+
 function playDay(){if(duo)return;
  if(replaying)return;const p=store.play,t=today();if(p.last===t)return;
  if(p.last&&p.last>t)return; // clock moved back / travelled west: keep the streak, don't double count
@@ -475,11 +518,11 @@ function playDay(){if(duo)return;
  if(p.last===yesterday())p.streak++;
  else if(p.last===dayBefore(t,2)&&p.streak>0&&saverOk(yesterday())){p.streak++;useSaver(yesterday());saved=true}
  else p.streak=1;
- p.last=t;p.best=Math.max(p.best||0,p.streak);save();
+ p.last=t;p.best=Math.max(p.best||0,p.streak);save();syncStreakRewards();
  tip('play','Play any game each day to grow your 🔥 streak!');
  const ms=PLAY_MS.find(m=>m[0]===p.streak&&!(p.got||[]).includes(m[0]));
  if(ms){p.got=(p.got||[]).concat(ms[0]);let msg='🔥 '+ms[1]+' streak!';
-  const ti=THEMES.findIndex((th,i)=>!themeOpen(i));
+  const ti=THEMES.findIndex((th,i)=>!th.days&&!themeOpen(i));
   if(ti>0){store.giftThemes.push(ti);msg+=' New theme: '+THEMES[ti].name}else{store.xp+=50;msg+=' +50 XP'}
   save();setTimeout(()=>{toast(msg,3200);SFX.unlock();buzz(30)},saved?3400:500)}
  if(saved)setTimeout(()=>toast('Streak saved! ❄️',3000),500)}
@@ -757,6 +800,18 @@ function drawCellRaw(x,y,s,col,a=1,glow=0,C=ctx,skin=SKIN,noGlow=false){
   C.save();rr(x,y,s,s*.9,R,C);C.clip();C.strokeStyle='rgba(255,255,255,.3)';C.lineWidth=s*.12;
   for(let k=-1;k<3;k++){C.beginPath();C.moveTo(x+k*s*.45,y+s);C.lineTo(x+k*s*.45+s*.6,y);C.stroke()}C.restore();
   C.fillStyle='rgba(255,255,255,.65)';C.beginPath();C.ellipse(x+s*.32,y+s*.27,s*.15,s*.08,-.6,0,7);C.fill();C.globalAlpha=1;return}
+ if(['porcelain','circuit','bubble','woven','crown'].includes(skin)){
+  C.shadowBlur=0;C.save();
+  const rad=skin==='bubble'?s*.48:skin==='porcelain'?s*.12:s*.2;
+  const g=C.createLinearGradient(x,y,x+s,y+s);g.addColorStop(0,shade(col,skin==='porcelain'?.7:.3));g.addColorStop(1,shade(col,-.35));C.fillStyle=g;rr(x,y,s,s,rad,C);C.fill();
+  C.strokeStyle='rgba(255,255,255,.65)';C.lineWidth=s*.035;rr(x+s*.07,y+s*.07,s*.86,s*.86,rad*.8,C);C.stroke();
+  if(skin==='porcelain'){C.fillStyle='rgba(255,255,255,.65)';rr(x+s*.16,y+s*.15,s*.68,s*.2,s*.06,C);C.fill()}
+  if(skin==='bubble'){C.fillStyle='#ffffffaa';C.beginPath();C.ellipse(x+s*.32,y+s*.28,s*.15,s*.09,-.6,0,7);C.fill()}
+  if(skin==='circuit'){C.strokeStyle='#172940';C.lineWidth=s*.06;C.beginPath();C.moveTo(x+s*.2,y+s*.25);C.lineTo(x+s*.55,y+s*.25);C.lineTo(x+s*.55,y+s*.75);C.lineTo(x+s*.8,y+s*.75);C.stroke();C.fillStyle='#e6ffff';for(const [u,v] of [[.2,.25],[.8,.75]]){C.beginPath();C.arc(x+s*u,y+s*v,s*.07,0,7);C.fill()}}
+  if(skin==='woven'){C.save();rr(x,y,s,s,rad,C);C.clip();C.lineWidth=s*.075;for(let i=1;i<6;i++){C.strokeStyle='rgba(255,255,255,.3)';C.beginPath();C.moveTo(x,y+s*i/6);C.lineTo(x+s,y+s*i/6);C.stroke();C.strokeStyle='rgba(0,0,0,.2)';C.beginPath();C.moveTo(x+s*i/6,y);C.lineTo(x+s*i/6,y+s);C.stroke()}C.restore()}
+  if(skin==='crown'){C.strokeStyle='#ffe08a';C.lineWidth=s*.055;rr(x+s*.08,y+s*.08,s*.84,s*.84,s*.12,C);C.stroke();C.fillStyle='#ffed99';C.beginPath();for(const [i,[u,v]] of [[.22,.35],[.36,.49],[.5,.25],[.64,.49],[.78,.35],[.7,.7],[.3,.7]].entries())i?C.lineTo(x+s*u,y+s*v):C.moveTo(x+s*u,y+s*v);C.closePath();C.fill()}
+  C.restore();C.globalAlpha=1;return
+ }
  if(skin==='jewel'){const q=.22;C.fillStyle=shade(col,-.35);rr(x,y,s,s,s*.1,C);C.fill();C.shadowBlur=0;
   const poly=(pts,f)=>{C.fillStyle=f;C.beginPath();pts.forEach(([u,v],i)=>i?C.lineTo(x+u*s,y+v*s):C.moveTo(x+u*s,y+v*s));C.closePath();C.fill()};
   poly([[0,0],[1,0],[1-q,q],[q,q]],shade(col,.45));poly([[0,0],[q,q],[q,1-q],[0,1]],shade(col,.2));
@@ -1026,7 +1081,7 @@ const scoreEl=$('#score');
 function bump(big){scoreEl.classList.add(big?'bigbump':'bump');setTimeout(()=>scoreEl.classList.remove('bump','bigbump'),big?220:90)}
 function bestNow(){return mode==='daily'?(store.dailyDate===today()?store.dailyBest:0):mode==='speed'?(store.bestSpeed||0):store.best}
 
-function checkSkinGoals(){if(replaying||duo)return;for(const k in SKIN_GOALS)if(!store.skins.includes(k)&&SKIN_GOALS[k][1]()){store.skins.push(k);save();const nm=SKINS.find(x=>x[0]===k)[1];setTimeout(()=>{toast(IC.gift+' NEW BLOCKS UNLOCKED: '+nm);SFX.unlock&&SFX.unlock()},900)}}
+function checkSkinGoals(){if(replaying||duo)return;syncStreakRewards();for(const k in SKIN_GOALS)if(!store.skins.includes(k)&&SKIN_GOALS[k][1]()){store.skins.push(k);save();const nm=SKINS.find(x=>x[0]===k)[1];setTimeout(()=>{toast(IC.gift+' NEW BLOCKS UNLOCKED: '+nm);SFX.unlock&&SFX.unlock()},900)}}
 let tipQ=[],tipBusy=false;
 function tip(k,msg){if(duo||replaying||store.tips[k]||tipQ.some(q=>q.k===k))return;tipQ.push({k,msg});if(!tipBusy)nextTip(700)}
 function nextTip(d){tipBusy=true;setTimeout(()=>{const q=tipQ.shift();if(!q||state!=='play'||store.tips[q.k]){tipBusy=false;if(q&&state==='play')nextTip(0);return}store.tips[q.k]=1;save();toast(q.msg,3000);$('#toast').dataset.tip='1';setTimeout(()=>nextTip(400),3000)},d)}
@@ -1156,7 +1211,7 @@ function rollGift(force){
  if(type==='swap'){if(swaps<MAXS){swaps++;g.label='FREE SWAP!'}else{mult2+=2;g.label='×2 SCORE!'}g.col='#5ee7ff';updateSwapUI()}
  else if(type==='mult'){mult2+=3;g.label='×2 SCORE!';g.col='#7bf5ff'}
  else{ // cosmetic only: never changes the score
-  const locked=SKINS.map(k=>k[0]).filter(k=>!store.skins.includes(k)),lockedT=THEMES.map((t,i)=>i).filter(i=>!themeOpen(i));
+  const locked=SKINS.map(k=>k[0]).filter(k=>!SKIN_DAYS[k]&&k!=='jewel'&&!store.skins.includes(k)),lockedT=THEMES.map((t,i)=>i).filter(i=>!THEMES[i].days&&!themeOpen(i));
   if(type==='skin')g.skin=locked.length?locked[Math.floor(rs*locked.length)]:null;
   if(type==='theme')g.theme=lockedT.length?lockedT[Math.floor(rt*lockedT.length)]:null;
   if(!replaying){
@@ -1392,7 +1447,7 @@ function showOver(){streakSaved=false;if(placedN>=1&&endReason!=='quit')playDay(
  $('#oShare').style.display='flex';
  const oc=$('#oChal');if(challenge){const d=score-challenge.score;oc.style.display='block';oc.className=d>0?'win':'lose';oc.innerHTML=IC.swords+(d>0?` YOU WIN! +${fmt(d)}`:d===0?' DRAW!':` ${fmt(-d)} TO WIN`)}else oc.style.display='none';
  // xp toward next theme
- const nx=THEMES.find(t=>t.need>store.xp);
+ const nx=THEMES.find(t=>!t.days&&t.need>store.xp);
  if(nx){const pv=THEMES[THEMES.indexOf(nx)-1].need;$('#oXpTxt').innerHTML=`${IC.gift} ${store.xp-pv} / ${nx.need-pv}`;$('#oNext').innerHTML=nx.name+' '+swHtml(nx);
   $('#oXpBar').style.width='0';setTimeout(()=>$('#oXpBar').style.width=((store.xp-pv)/(nx.need-pv)*100)+'%',80)}
  else{$('#oXpTxt').innerHTML=IC.gift+' ALL THEMES';$('#oNext').textContent='';$('#oXpBar').style.width='100%'}
@@ -1402,11 +1457,12 @@ function showOver(){streakSaved=false;if(placedN>=1&&endReason!=='quit')playDay(
 function swHtml(t){return '<span class="sw">'+t.cols.slice(0,4).map(c=>`<b style="background:${c}"></b>`).join('')+'</span>'}
 
 /* ---------------- overlays ---------------- */
-function hideAll(){kick();document.querySelectorAll('.overlay').forEach(o=>{o.classList.remove('show');o.inert=true;o.setAttribute('aria-hidden','true')});document.body.classList.remove('menu')}
-function show(id){hideAll();const o=$(id);o.classList.add('show');o.inert=false;o.removeAttribute('aria-hidden');document.body.classList.add('menu');hideSvgs(o);kick();if(kbUser){const f=o.querySelector('button:not([hidden]),a');if(f)f.focus({preventScroll:true})}}
+function hideAll(){$('#rewardNotice').hidden=true;kick();document.querySelectorAll('.overlay').forEach(o=>{o.classList.remove('show');o.inert=true;o.setAttribute('aria-hidden','true')});document.body.classList.remove('menu')}
+function show(id){hideAll();const o=$(id);o.classList.add('show');o.inert=false;o.removeAttribute('aria-hidden');document.body.classList.add('menu');hideSvgs(o);kick();if(id==='#title')offerReward();if(kbUser){const f=o.querySelector('button:not([hidden]),a');if(f)f.focus({preventScroll:true})}}
 let kbUser=false;addEventListener('keydown',()=>kbUser=true,{capture:true});addEventListener('pointerdown',()=>kbUser=false,{capture:true});
 function hideSvgs(r=document){r.querySelectorAll('svg:not([aria-hidden])').forEach(v=>{v.setAttribute('aria-hidden','true');v.setAttribute('focusable','false')})}
 function buildTitle(){
+ syncStreakRewards();
  const word=[['B','L','O','K'],['A','H','O','L','I','C']];
  $('#logo').innerHTML=word.map((r,ri)=>'<div class="row">'+r.map((ch,i)=>`<div class="tile" style="background:${TH.cols[(i+ri*3)%7]};animation-delay:${(i+ri*5)*.09}s">${ch}</div>`).join('')+'</div>').join('');
  const t=today();$('#dDate').textContent=t.slice(8)+'/'+t.slice(5,7);
@@ -1425,13 +1481,17 @@ function buildTitle(){
  $('#playBtn').classList.toggle('secondary',!!pendingChal||badChal||!!run);
  document.body.classList.toggle('chal',!!pendingChal||badChal);
  const u=unlockedCount();$('#tCount').textContent=u+'/'+THEMES.length;
- const nx=THEMES.find(x=>x.need>store.xp);$('#tBar').style.width=nx?(store.xp/nx.need*100)+'%':'100%';
+ const nx=STREAK_REWARDS.find(r=>!store.streakRewards.includes(r.id));
+ const current=Math.max(streakNumber(playStreakNow()),streakNumber(streak));
+ $('#tBar').style.width=nx?Math.min(100,current/nx.days*100)+'%':'100%';
+ $('#nextUnlock').textContent=nx?'Next unlock: '+nx.name+(nx.skin?' blocks':' theme')+' in '+Math.max(0,nx.days-current)+' days':'All streak rewards unlocked!';
+ $('#themeNew').hidden=!!store.themesVisited;$('#themeTip').hidden=!!store.themesVisited;
 }
 function buildThemes(){
  $('#kGrid').innerHTML=SKINS.map(([k,n])=>{const lk=!store.skins.includes(k);return `<button class="skin ${k===SKIN?'sel':''}" data-k="${k}"><canvas width="92" height="92"></canvas>${n}${lk?`<div class="lk">${IC.lock}<span>${SKIN_GOALS[k]?SKIN_GOALS[k][0]:''}</span></div>`:''}</button>`}).join('');
  document.querySelectorAll('#kGrid .skin').forEach(b=>{const C=b.querySelector('canvas').getContext('2d'),k=b.dataset.k;[[0,0,0],[46,0,3],[0,46,4],[46,46,5]].forEach(([x,y,c])=>drawCell(x,y,46,TH.cols[c],1,0,C,k))});
  $('#tGrid').innerHTML=THEMES.map((t,i)=>{const lk=!themeOpen(i);
-  return `<button class="theme ${i===store.theme?'sel':''} ${lk?'locked':''}" data-i="${i}" style="background:linear-gradient(160deg,${t.bg[0]},${t.bg[1]})">${swHtml(t)}<span class="n">${t.name}</span>${lk?`<div class="lk">${IC.lock}<span>${store.xp} / ${t.need}</span></div>`:''}</button>`}).join('');
+  return `<button class="theme ${i===store.theme?'sel':''} ${lk?'locked':''}" data-i="${i}" style="background:linear-gradient(160deg,${t.bg[0]},${t.bg[1]})">${swHtml(t)}<span class="n">${t.name}</span>${lk?`<div class="lk">${IC.lock}<span>${t.days?t.days+'-day streak':store.xp+' / '+t.need}</span></div>`:''}</button>`}).join('');
 }
 $('#tGrid').addEventListener('click',e=>{const b=e.target.closest('.theme');if(!b)return;const i=+b.dataset.i;
  if(!themeOpen(i)){SFX.bad();b.animate([{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'none'}],{duration:200});return}
@@ -1440,7 +1500,7 @@ $('#kGrid').addEventListener('click',e=>{const b=e.target.closest('.skin');if(!b
  if(!store.skins.includes(k)){SFX.bad();toast(IC.lock+' '+(SKIN_GOALS[k]?SKIN_GOALS[k][0].toUpperCase()+' TO UNLOCK':'LOCKED'),2600);return}
  SKIN=store.skin=k;save();buildThemes();SFX.click()});
 let themesReturn='#title';
-function openThemes(from){themesReturn=from;buildThemes();show('#themes')}
+function openThemes(from){store.themesVisited=true;save();$('#themeNew').hidden=true;$('#themeTip').hidden=true;themesReturn=from;buildThemes();show('#themes')}
 $('#playBtn').onclick=()=>{SFX.click();startGame('classic')};
 $('#contBtn').onclick=()=>{SFX.click();unlockAudio();resumeRun()};
 $('#mBtn').onclick=()=>{SFX.click();buildMissions();show('#missions')};
