@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-aq0vC70ji/D53UnsflzsZ/exl6Xl31VDQecDnVkpdo0='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-VqZZT+Zt1BGMXH5KVLtcRxwb2knjNM3X6OMFFmNrORw='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#7b5cd6">
 <meta name="mobile-web-app-capable" content="yes">
@@ -216,6 +216,14 @@ body.duo #best,body.duo #x2chip{display:none!important}body.gifting #x2chip{visi
 
 .rewardHelp{font-size:12px;line-height:1.5;margin:4px 0 14px;opacity:.85}#themes h3{font-size:14px;margin:10px 0 0;letter-spacing:1px}#tBack{position:sticky;bottom:0}
 @media(max-height:850px){#title .logo .tile{height:38px;width:35px;font-size:24px}#title .tagline{font-size:13px;margin-bottom:9px}#title .subbtn{margin-top:10px;padding:9px 12px}#title .subbtn .ic{width:42px;height:42px}#title .bigbtn{height:62px}#title #themesBtn{margin-top:0;min-height:64px}#title #mBtn,#title #fBtn{margin-top:10px}#title .homeFoot{margin-top:7px;flex-wrap:wrap;gap:0}#title .homeFoot a,#title .homeFoot button{font-size:11px!important;min-height:32px}}
+
+#themes{touch-action:pan-x pan-y pinch-zoom}#rewardGrid canvas{touch-action:pan-x pan-y pinch-zoom}
+#rewardGrid{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x proximity;padding:5px 3px 12px;scrollbar-width:thin;touch-action:pan-x pan-y pinch-zoom}
+.reward{flex:0 0 145px;min-height:177px;border-radius:16px;padding:11px 8px;display:flex;flex-direction:column;align-items:center;gap:5px;scroll-snap-align:start;box-shadow:0 4px 0 #0004;text-align:center;color:white;font-weight:900}
+.reward.sel{outline:3px solid white;outline-offset:-3px}.rewardDay{font-size:11px;letter-spacing:1px;color:#ffe08a}.rewardPreview{height:48px;display:flex;align-items:center;justify-content:center}.rewardPreview canvas{position:static;inset:auto;width:46px;height:46px}.rewardPreview .sw{display:flex;gap:3px}.rewardPreview .sw b{width:22px;height:25px;border-radius:6px}
+.rewardName{font-size:14px;line-height:1.2;min-height:17px}.rewardType{font-size:11px;opacity:.85}.reward .lk,.rewardStatus{position:static;display:flex;align-items:center;justify-content:center;gap:4px;min-height:24px;border-radius:8px;background:#100b2580;width:100%;font-size:10px;padding:4px;line-height:1.3;margin-top:auto}.reward .lk svg{font-size:13px;flex:none}
+#kGrid .skin{height:auto;min-height:135px;padding:8px 4px;gap:6px;justify-content:flex-start}#kGrid .skin .lk{position:static;background:#100b2570;border-radius:7px;font-size:9px;min-height:42px;width:100%;margin-top:auto}#kGrid .skin .lk svg{font-size:14px}
+#tGrid .theme{height:auto;min-height:116px;padding:13px 7px;gap:8px}#tGrid .theme .lk{position:static;background:#100b2570;border-radius:8px;padding:5px 10px;flex-direction:row;min-height:27px;font-size:11px}#tGrid .theme .lk svg{font-size:15px}#tGrid .theme.locked .sw,#tGrid .theme.locked span.n{opacity:1}
 </style>
 </head>
 <body>
@@ -366,6 +374,10 @@ body.duo #best,body.duo #x2chip{display:none!important}body.gifting #x2chip{visi
   <div class="card">
     <h2>COLOURS &amp; BLOCKS</h2>
     <p class="rewardHelp">Play any mode daily. Streak rewards stay yours forever.</p>
+    <h3>STREAK REWARDS</h3>
+    <p id="rewardProgress" class="rewardHelp"></p>
+    <div id="rewardGrid" aria-label="Streak rewards in day order"></div>
+    <p class="rewardHelp">10 → 100 days · Swipe to explore all ten rewards →</p>
     <h3>BLOCKS</h3>
     <div class="skgrid" id="kGrid"></div>
     <h3 style="margin-top:18px">COLOUR THEMES</h3>
@@ -1488,11 +1500,20 @@ function buildTitle(){
  $('#themeNew').hidden=!!store.themesVisited;$('#themeTip').hidden=!!store.themesVisited;
 }
 function buildThemes(){
- $('#kGrid').innerHTML=SKINS.map(([k,n])=>{const lk=!store.skins.includes(k);return `<button class="skin ${k===SKIN?'sel':''}" data-k="${k}"><canvas width="92" height="92"></canvas>${n}${lk?`<div class="lk">${IC.lock}<span>${SKIN_GOALS[k]?SKIN_GOALS[k][0]:''}</span></div>`:''}</button>`}).join('');
+ $('#rewardProgress').textContent='Your best streak: '+earnedStreak()+' days · Unlocks stay yours forever';
+ $('#rewardGrid').innerHTML=STREAK_REWARDS.filter(r=>r.days>=10).map(r=>{
+  const unlocked=r.skin?store.skins.includes(r.skin):themeOpen(r.theme),selected=r.skin?SKIN===r.skin:store.theme===r.theme;
+  const preview=r.skin?'<canvas width="92" height="92" aria-hidden="true"></canvas>':swHtml(THEMES[r.theme]);
+  const bg=r.skin?'linear-gradient(145deg,#413457,#221d3e)':`linear-gradient(145deg,${THEMES[r.theme].bg.join(',')})`;
+  return `<button class="reward ${selected?'sel':''}" ${r.skin?'data-k="'+r.skin+'"':'data-i="'+r.theme+'"'} data-reward="${r.id}" style="background:${bg}" aria-label="${r.days} days: ${r.name}, ${r.skin?'Blocks':'Theme'}, ${unlocked?'Unlocked, tap to apply':'locked'}" aria-pressed="${selected}"><span class="rewardDay">DAY ${r.days}</span><span class="rewardPreview">${preview}</span><span class="rewardName">${r.name}</span><span class="rewardType">${r.skin?'Blocks':'Theme'}</span>${unlocked?'<span class="rewardStatus">Unlocked · Tap to apply</span>':`<span class="lk">${IC.lock} ${r.days}-day streak</span>`}</button>`;
+ }).join('');
+ document.querySelectorAll('#rewardGrid [data-k]').forEach(b=>{const c=b.querySelector('canvas').getContext('2d');[[0,0,0],[46,0,3],[0,46,4],[46,46,5]].forEach(([x,y,i])=>drawCell(x,y,46,TH.cols[i],1,0,c,b.dataset.k))});
+ $('#kGrid').innerHTML=SKINS.filter(([k])=>!SKIN_DAYS[k]).map(([k,n])=>{const lk=!store.skins.includes(k);return `<button class="skin ${k===SKIN?'sel':''}" data-k="${k}"><canvas width="92" height="92"></canvas>${n}${lk?`<div class="lk">${IC.lock}<span>${SKIN_GOALS[k]?SKIN_GOALS[k][0]:''}</span></div>`:''}</button>`}).join('');
  document.querySelectorAll('#kGrid .skin').forEach(b=>{const C=b.querySelector('canvas').getContext('2d'),k=b.dataset.k;[[0,0,0],[46,0,3],[0,46,4],[46,46,5]].forEach(([x,y,c])=>drawCell(x,y,46,TH.cols[c],1,0,C,k))});
- $('#tGrid').innerHTML=THEMES.map((t,i)=>{const lk=!themeOpen(i);
+ $('#tGrid').innerHTML=THEMES.map((t,i)=>{if(t.days)return '';const lk=!themeOpen(i);
   return `<button class="theme ${i===store.theme?'sel':''} ${lk?'locked':''}" data-i="${i}" style="background:linear-gradient(160deg,${t.bg[0]},${t.bg[1]})">${swHtml(t)}<span class="n">${t.name}</span>${lk?`<div class="lk">${IC.lock}<span>${t.days?t.days+'-day streak':store.xp+' / '+t.need}</span></div>`:''}</button>`}).join('');
 }
+$('#rewardGrid').addEventListener('click',e=>{const b=e.target.closest('[data-reward]');if(!b)return;const r=STREAK_REWARDS.find(r=>r.id===b.dataset.reward);const unlocked=r.skin?store.skins.includes(r.skin):themeOpen(r.theme);if(!unlocked){SFX.bad();toast(IC.lock+' '+r.days+'-day streak to unlock');return}const left=$('#rewardGrid').scrollLeft;if(r.skin)SKIN=store.skin=r.skin;else{store.theme=r.theme;TH=THEMES[r.theme];makeBokeh()}save();buildThemes();$('#rewardGrid').scrollLeft=left;SFX.click();kick()});
 $('#tGrid').addEventListener('click',e=>{const b=e.target.closest('.theme');if(!b)return;const i=+b.dataset.i;
  if(!themeOpen(i)){SFX.bad();b.animate([{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'none'}],{duration:200});return}
  store.theme=i;TH=THEMES[i];save();makeBokeh();buildThemes();SFX.click();kick()});

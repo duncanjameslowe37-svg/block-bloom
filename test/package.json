@@ -1,1 +1,1 @@
-{"name":"blokaholic-regressions","private":true,"scripts":{"test":"node run22.js && node offline23.js"},"devDependencies":{"playwright":"1.65.0"}}
+{"name":"blokaholic-regressions","private":true,"scripts":{"test":"node run22.js && node run24.js && node offline23.js"},"devDependencies":{"playwright":"1.65.0"}}
