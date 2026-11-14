@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-ZL1msTgpo9DC7lXRVZouXiv9wPDnUDSiSuEUAvo86uk='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-Jc3NyOqst+Er3a1ygWQtLeQTu9gJZ7zIf5bg1g6YJeU='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://rvrtryuwkvamvmrdszfu.supabase.co; media-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#7b5cd6">
 <meta name="mobile-web-app-capable" content="yes">
@@ -778,7 +778,7 @@ function layout(){
   L.slots=[0,1,2].map(i=>({x:L.bx+i*S/3,y:L.by+S+L.cell*.25,w:S/3,h:th}));
   L.swap={x:W/2-32,y:Math.min(L.slots[0].y+th+2,H-74)};
  }
- L.idle={x:L.swap.x+32-(land?Math.min(84,L.slots[0].w/2-30):88),y:L.swap.y+32};
+ {const sc=L.swap.x+32,off=land?Math.min(104,L.slots[0].w/2-24):104;L.idle={x:off<84&&sc+84+40<=W?sc+84:sc-Math.max(off,84),y:L.swap.y+32}}
  L.tc=Math.max(12,Math.min(L.cell*.64,L.slots[0].w/4.8,Math.max(8,L.slots[0].h)/5.2));
  const sb=$('#swapBtn');sb.style.left=L.swap.x+'px';sb.style.top=L.swap.y+'px';
  {const sp=$('#stuckP'),r=land?{x:L.slots[0].x,y:L.by,w:L.slots[0].w,h:L.swap.y-L.by-14}:{x:L.bx+6,y:L.slots[0].y,w:L.S-12,h:L.swap.y-L.slots[0].y-10};
@@ -1086,14 +1086,15 @@ function drawIdle(){
  if(mode==='speed'||state!=='play'||stuck||idleT>IDLE_WARN)return;
  if(!idleSince)idleSince=now;
  const a=Math.min(1,(now-idleSince)/600)*(idlePaused()?.55:1),f=Math.max(0,idleT/IDLE_WARN);
- const r=22,x=L.idle.x,y=L.idle.y,last3=idleT<=3000,col=last3?'#ff8fa3':f<.6?'#ffd27a':'#ffffff';
+ const r=29,x=L.idle.x,y=L.idle.y,last3=idleT<=3000,col=last3?'#ff8fa3':f<.6?'#ffd27a':'#ffffff';
  ctx.save();ctx.globalAlpha=a;
- ctx.fillStyle='rgba(40,20,70,.45)';ctx.beginPath();ctx.arc(x,y,r+7,0,7);ctx.fill();
- ctx.lineWidth=5;ctx.lineCap='round';ctx.strokeStyle='rgba(255,255,255,.18)';ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.stroke();
+ ctx.fillStyle='rgba(32,14,60,.72)';ctx.beginPath();ctx.arc(x,y,r+9,0,7);ctx.fill();
+ ctx.lineWidth=2;ctx.strokeStyle='rgba(255,255,255,.28)';ctx.beginPath();ctx.arc(x,y,r+9,0,7);ctx.stroke();
+ ctx.lineWidth=7;ctx.lineCap='round';ctx.strokeStyle='rgba(255,255,255,.16)';ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.stroke();
  ctx.strokeStyle=col;if(f>0){ctx.beginPath();ctx.arc(x,y,r,-Math.PI/2,-Math.PI/2+f*Math.PI*2);ctx.stroke()}
  const pulse=last3?1+.06*Math.max(0,1-((IDLE_WARN-idleT)%1000)/250):1;
- ctx.translate(x,y);ctx.scale(pulse,pulse);ctx.fillStyle=col;ctx.font='900 19px ui-rounded,system-ui,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
- ctx.fillText(Math.ceil(idleT/1000),0,1);ctx.restore()}
+ ctx.translate(x,y);ctx.scale(pulse,pulse);ctx.font='900 28px ui-rounded,system-ui,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+ ctx.lineJoin='round';ctx.lineWidth=4;ctx.strokeStyle='rgba(20,6,40,.6)';ctx.strokeText(Math.ceil(idleT/1000),0,2);ctx.fillStyle=col;ctx.fillText(Math.ceil(idleT/1000),0,2);ctx.restore()}
 let rawDt=0,introStep=-1;
 function drawIntro(){
  const t=now-introT0,st=Math.min(3,Math.floor(t/650)),k=(t%650)/650,{bx,by,S,cell}=L,cx=bx+S/2,cy=by+S*.42;
